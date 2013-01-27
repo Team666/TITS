@@ -65,6 +65,14 @@ Planned features
   should be treated as a single item, and should always be played after each order.
 
 ### Nice to have
+* **Full Last.fm integration**
+  Just like the Zune Software was relying on the Zune Marketplace for Artist information and pictures,
+  TITS could mimick and extend upon the behaviour of the Zune Software by retrieving relevant information
+  from Last.fm. This also includes a pretty user avatar displayed in the player itself.
+
+* **Windows Phone 8 Sync Support**
+  Windows Phone 8 now uses the [Media Transfer Protocol](http://en.wikipedia.org/wiki/Media_Transfer_Protocol),
+  this functionality should be fairly easy to include in the player by using the API provided by Microsoft.
 
 * **Warn when a track is paused for longer than 10 minutes**
 
