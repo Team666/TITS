@@ -31,9 +31,9 @@ Planned features
 * **Queue after current track**
 
   [Spotify](http://www.spotify.com/) does this very well. Dragging any item (be it a song, album,
-  [artist of playlist) to the "Now playing" playlist would enqueue it. Additionally,
-  [[Foobar2000](http://www.foobar2000.org/) has the options *Cursor follows playback* and *Playback
-  [follows cursor*.
+  artist of playlist) to the "Now playing" playlist would enqueue it. Additionally,
+  [Foobar2000](http://www.foobar2000.org/) has the options *Cursor follows playback* and *Playback
+  follows cursor*.
 
   Queued songs should have a visual hint, such as "(2)", next to the title.
 
