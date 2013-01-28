@@ -10,7 +10,7 @@ Quick Start
 -----------
 
 1. Clone the repository.
-2. Nothing yet.
+2. Wait.
 
 Planned features
 ----------------
@@ -45,7 +45,7 @@ Planned features
   separate ratings, for example "Funny". This could also double as a form of tagging.
 
   *Banned* items would never be played when playing music at random, but would still be playing when
-  *listening to the entire album in order. Similarly, *loved* items should be played more often.
+  listening to the entire album in order. Similarly, *loved* items should be played more often.
 
   Ratings could also apply not just to songs, but albums and entire artists.
 
