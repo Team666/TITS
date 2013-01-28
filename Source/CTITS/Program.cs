@@ -45,10 +45,12 @@ namespace TITS
             TID3Info info = default(TID3Info);
             if (player.LoadID3(TID3Version.id3Version2, ref info) && info.Title.Length > 0)
             {
-                Console2.Write(ConsoleColor.Gray, "Playing ");
                 Console2.Write(ConsoleColor.Magenta, info.Title);
-                Console2.Write(ConsoleColor.Gray, " - ");
-                Console2.WriteLine(ConsoleColor.Magenta, info.Artist);
+                Console2.Write(ConsoleColor.DarkMagenta, " - ");
+                Console2.Write(ConsoleColor.Magenta, info.Artist);
+                Console2.Write(ConsoleColor.DarkMagenta, " (");
+                Console2.Write(ConsoleColor.Magenta, info.Album);
+                Console2.WriteLine(ConsoleColor.DarkMagenta, ")");
             }
 
             // Get track length
@@ -68,7 +70,7 @@ namespace TITS
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.Escape)
                     {
-                        Console2.WriteLine(ConsoleColor.DarkRed, "Stopped");
+                        Console2.WriteLine(ConsoleColor.DarkRed, "[Stopped] ");
                         player.Close();
                         break;
                     }
@@ -85,8 +87,8 @@ namespace TITS
                 TStreamTime time = default(TStreamTime);
                 player.GetPosition(ref time);
 
-                Console2.Write(ConsoleColor.DarkGreen, "Playing ");
-                Console2.Write(ConsoleColor.Green, "{0:00}:{1:00}:{2:00} / {3:00}:{4:00}:{5:00} ", time.hms.hour, time.hms.minute, time.hms.second, totalTime.hms.hour, totalTime.hms.minute, totalTime.hms.second);
+                Console2.Write(ConsoleColor.DarkGreen, "[Playing] ");
+                Console2.Write(ConsoleColor.Green, "{0:0}:{1:00} / {2:0}:{3:00} ", time.hms.minute, time.hms.second, totalTime.hms.minute, totalTime.hms.second);
                 Console2.Write(ConsoleColor.DarkGreen, "({0})\r", playcount);
 
                 System.Threading.Thread.Sleep(10);
