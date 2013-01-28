@@ -48,13 +48,31 @@ namespace TITS
             player.GetStatus(ref status);
             while (status.fPlay)
             {
+                // Escape?
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.Escape)
+                    {
+                        Console2.WriteLine(ConsoleColor.DarkRed, "Stopped");
+                        player.Close();
+                        break;
+                    }
+                }
+
+                // Enqueue for gapless playback
                 if (status.nSongsInQueue == 0)
                 {
-                    Console2.WriteLine(ConsoleColor.White, "Enqueueing");
                     player.AddFile(filename, TStreamFormat.sfAutodetect);
                 }
 
-                System.Threading.Thread.Sleep(100);
+                // Display running time
+                TStreamTime time = default(TStreamTime);
+                player.GetPosition(ref time);
+                Console2.Write(ConsoleColor.DarkGreen, "Playing ");
+                Console2.Write(ConsoleColor.Green, "{0:00}:{1:00}:{2:00}\r", time.hms.hour, time.hms.minute, time.hms.second);
+
+                System.Threading.Thread.Sleep(10);
                 player.GetStatus(ref status);
             }
         }
