@@ -19,7 +19,9 @@ namespace TITS
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
             try
             {
-                StartLoop(args[0]);
+                //StartLoop(args[0]);
+                Library.Song s = new Library.Song(args[0]);
+                s.Load();
             }
             catch (Exception ex)
             {
