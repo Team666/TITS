@@ -34,7 +34,11 @@ namespace TITS
             Console.WriteLine("Opening {0}...", filename);
             player.SetSettings(TSettingID.sidAccurateLength, 1);
             player.SetSettings(TSettingID.sidAccurateSeek, 1);
-            player.OpenFile(filename, TStreamFormat.sfAutodetect);
+
+            if (System.IO.File.Exists(filename.Replace("_loop", "_intro")))
+                player.OpenFile(filename.Replace("_loop", "_intro"), TStreamFormat.sfAutodetect);
+            else
+                player.OpenFile(filename, TStreamFormat.sfAutodetect);
 
             if (!player.StartPlayback())
             {
@@ -64,6 +68,9 @@ namespace TITS
             player.GetStatus(ref status);
             while (status.fPlay)
             {
+                player.GetStreamInfo(ref streamInfo);
+                totalTime = streamInfo.Length;
+
                 // Escape?
                 if (Console.KeyAvailable)
                 {
