@@ -66,13 +66,18 @@ Planned features
 
 ### Nice to have
 * **Full Last.fm integration**
-  Just like the Zune Software was relying on the Zune Marketplace for Artist information and pictures,
-  TITS could mimick and extend upon the behaviour of the Zune Software by retrieving relevant information
-  from Last.fm. This also includes a pretty user avatar displayed in the player itself.
+
+  Just like the Zune Software was relying on the Zune Marketplace for Artist information and
+  pictures, TITS could mimick and extend upon the behaviour of the Zune Software by retrieving
+  relevant information from Last.fm. This also includes a pretty user avatar displayed in the player
+  itself.
 
 * **Windows Phone 8 Sync Support**
-  Windows Phone 8 now uses the [Media Transfer Protocol](http://en.wikipedia.org/wiki/Media_Transfer_Protocol),
-  this functionality should be fairly easy to include in the player by using the API provided by Microsoft.
+
+  Windows Phone 8 now uses the 
+  [Media Transfer Protocol](http://en.wikipedia.org/wiki/Media_Transfer_Protocol), 
+  this functionality should be fairly easy to include in the player by using the API provided by 
+  Microsoft.
 
 * **Warn when a track is paused for longer than 10 minutes**
 
@@ -81,10 +86,10 @@ Planned features
 
 * **Tracking play/skip ratio**
 
-   Some way of tracking how often you've played a song or skipped it would be useful for several
-   reasons. It would, for instance, allow you to see which songs you actually listen to, and which
-   songs you usually skip without realizing.
+  Some way of tracking how often you've played a song or skipped it would be useful for several
+  reasons. It would, for instance, allow you to see which songs you actually listen to, and which
+  songs you usually skip without realizing.
 
-   One way to show this, would be to show a percentage for each song that indicates the average
-   length played. 100% would indicate a song you never skipped, and 0% would indicate a song you
-   never actually listened.
+  One way to show this, would be to show a percentage for each song that indicates the average
+  length played. 100% would indicate a song you never skipped, and 0% would indicate a song you
+  never actually listened.
