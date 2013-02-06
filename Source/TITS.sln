@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibTITS", "LibTITS\LibTITS.csproj", "{27F39F92-D6B9-4BF9-B4A1-EAD646181B03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTITS", "CTITS\CTITS.csproj", "{15298AA7-4F6D-40EE-A91D-66DAFBDB017E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTITS", "CTITS\ConsoleTITS.csproj", "{15298AA7-4F6D-40EE-A91D-66DAFBDB017E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
