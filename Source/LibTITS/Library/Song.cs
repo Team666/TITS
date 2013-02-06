@@ -1,15 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Drawing;
 using libZPlay;
 
 namespace TITS.Library
 {
+    public class Album
+    {
+        public Album()
+        {
+            Songs = new List<Song>();
+        }
+
+        public Image AlbumArt;
+        public List<Song> Songs { get; private set; }
+    }
+
     public class Song
     {
         public string FileName { get; protected set; }
 
-        public bool IsLoaded { get; protected set; }
+        public bool NowPlaying { get; protected set; }
+
+        public class SongInfo
+        {
+            string Title  { get; set; }
+            string Album  { get; set; }
+            string Artist { get; set; }
+        }
+
+        public Album Album { get; set; }
+
+        public SongInfo Info { get; protected set; }
 
         public TimeSpan Length { get; protected set; }
 
@@ -19,23 +42,6 @@ namespace TITS.Library
             if (!File.Exists(fileName)) throw new FileNotFoundException("File not found: " + fileName, fileName);
 
             this.FileName = fileName;
-        }
-
-        public void Load()
-        {
-            if (!Player.Engine.OpenFile(this.FileName, libZPlay.TStreamFormat.sfAutodetect))
-            {
-                throw new EngineException(Player.Engine.GetError());
-            }
-            else
-            {
-                this.IsLoaded = true;
-
-                TStreamInfo streamInfo = default(TStreamInfo);
-                Player.Engine.GetStreamInfo(ref streamInfo);
-
-                this.Length = streamInfo.Length.ToTimeSpan();
-            }
         }
     }
 }

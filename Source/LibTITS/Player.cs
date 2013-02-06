@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TITS.Library;
 using libZPlay;
 
 namespace TITS
 {
     class Player
     {
+        private Song _currentSong;
         private static ZPlay _engine = null;
 
         internal static ZPlay Engine
@@ -21,6 +23,21 @@ namespace TITS
             private set
             {
                 _engine = value;
+            }
+        }
+
+        public void Play(Song song)
+        {
+            if (!Player.Engine.OpenFile(song.FileName, libZPlay.TStreamFormat.sfAutodetect))
+                throw new EngineException(Player.Engine.GetError());
+
+            _currentSong = song;
+            TStreamInfo streamInfo = default(TStreamInfo);
+            Player.Engine.GetStreamInfo(ref streamInfo);
+
+            if (!Player.Engine.StartPlayback())
+            {
+                throw new EngineException(Player.Engine.GetError());
             }
         }
 
