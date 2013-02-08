@@ -41,13 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Engine\FileNotSupportedException.cs" />
+    <Compile Include="Components\Engine\IPlayer.cs" />
+    <Compile Include="Components\Engine\Player.cs" />
     <Compile Include="Components\NowPlaying.cs" />
     <Compile Include="Console.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Components\Engine\ZPlayer.cs" />
     <Compile Include="libZPlay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Library\Song.cs" />
-    <Compile Include="EngineException.cs" />
+    <Compile Include="Components\Engine\EngineException.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,12 +5,22 @@ using System.Text;
 using TITS.Library;
 using libZPlay;
 
-namespace TITS
+namespace TITS.Components.Engine
 {
-    class Player
+    class ZPlayer : IPlayer
     {
         private Song _currentSong;
         private static ZPlay _engine = null;
+
+        public string[] GetSupportedFileTypes()
+        {
+            return new string[] { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
+        }
+
+        public bool SupportsFileType(string extension)
+        {
+            return GetSupportedFileTypes().Contains(extension);
+        }
 
         internal static ZPlay Engine
         {
@@ -28,16 +38,16 @@ namespace TITS
 
         public void Play(Song song)
         {
-            if (!Player.Engine.OpenFile(song.FileName, libZPlay.TStreamFormat.sfAutodetect))
-                throw new EngineException(Player.Engine.GetError());
+            if (!ZPlayer.Engine.OpenFile(song.FileName, libZPlay.TStreamFormat.sfAutodetect))
+                throw new EngineException(ZPlayer.Engine.GetError());
 
             _currentSong = song;
             TStreamInfo streamInfo = default(TStreamInfo);
-            Player.Engine.GetStreamInfo(ref streamInfo);
+            ZPlayer.Engine.GetStreamInfo(ref streamInfo);
 
-            if (!Player.Engine.StartPlayback())
+            if (!ZPlayer.Engine.StartPlayback())
             {
-                throw new EngineException(Player.Engine.GetError());
+                throw new EngineException(ZPlayer.Engine.GetError());
             }
         }
 
@@ -50,5 +60,6 @@ namespace TITS
                 throw new EngineException(engine.GetError());
             return engine;
         }
+
     }
 }
