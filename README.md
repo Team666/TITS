@@ -65,6 +65,12 @@ Planned features
   should be treated as a single item, and should always be played after each order.
 
 ### Nice to have
+* **Intelligent sort modes**
+  
+  For example, sorting by _most played_ albums where the most played albums 'deteriorate' faster than 
+  lesser played albums (to prevent certain albums from dominating the list for a long period of time
+  so it could ~actively reflect the changing listening habits of the user~).
+
 * **Full Last.fm integration**
 
   Just like the Zune Software was relying on the Zune Marketplace for Artist information and
