@@ -7,10 +7,12 @@ namespace TITS.Components.Engine
 {
     class Player : IPlayer
     {
-        private string[] _supportedFileTypes;
         private ZPlayer _zplayer;
+        private string[] _supportedFileTypes;
 
         public event EventHandler QueueEmpty;
+
+        public Queue<Library.Song> Queue { get; private set; }
 
         public Player()
         {
