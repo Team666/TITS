@@ -10,6 +10,8 @@ namespace TITS.Components.Engine
         private string[] _supportedFileTypes;
         private ZPlayer _zplayer;
 
+        public event EventHandler QueueEmpty;
+
         public Player()
         {
             _zplayer = new ZPlayer();
@@ -39,5 +41,6 @@ namespace TITS.Components.Engine
         {
             _zplayer.Play(song);
         }
+
     }
 }

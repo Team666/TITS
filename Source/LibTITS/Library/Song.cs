@@ -23,7 +23,7 @@ namespace TITS.Library
 
         public bool NowPlaying { get; protected set; }
 
-        public class SongInfo
+        public struct SongInfo
         {
             string Title  { get; set; }
             string Album  { get; set; }

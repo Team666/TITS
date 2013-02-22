@@ -12,6 +12,8 @@ namespace TITS.Components.Engine
         private Song _currentSong;
         private static ZPlay _engine = null;
 
+        public event EventHandler QueueEmpty;
+
         public string[] GetSupportedFileTypes()
         {
             return new string[] { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };

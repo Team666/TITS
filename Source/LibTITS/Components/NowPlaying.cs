@@ -8,8 +8,8 @@ namespace TITS.Components
 {
     class NowPlaying
     {
-        public List<Song> Queue { get; private set; }
-        private List<Song> _originalQueue;
+        public List<Song> Playlist { get; private set; }
+        private List<Song> _originalPlaylist;
 
         public RepeatModes RepeatMode { get; set; }
 
