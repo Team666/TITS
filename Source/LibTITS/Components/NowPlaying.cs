@@ -14,7 +14,12 @@ namespace TITS.Components
 
         public RepeatModes RepeatMode { get; set; }
 
-        public void EnqueueNextSong()
+		public NowPlaying()
+		{
+			_player.Queue.QueueEmpty += this.EnqueueNextSong;
+		}
+
+        public void EnqueueNextSong(object sender, EventArgs e)
         {
             _player.Queue.Enqueue(Playlist.NextSong);
         }
