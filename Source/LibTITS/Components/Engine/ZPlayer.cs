@@ -12,16 +12,16 @@ namespace TITS.Components.Engine
         private Song _currentSong;
         private static ZPlay _engine = null;
 
-        public event EventHandler QueueEmpty;
+        private static string[] _supportedFileTypes = { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
 
-        public string[] GetSupportedFileTypes()
+        public static string[] SupportedFileTypes
         {
-            return new string[] { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
+            get { return _supportedFileTypes; }
         }
 
         public bool SupportsFileType(string extension)
         {
-            return GetSupportedFileTypes().Contains(extension);
+            return SupportedFileTypes.Contains(extension);
         }
 
         internal static ZPlay Engine

@@ -9,19 +9,19 @@ namespace TITS.Components.Engine
     {
         private ZPlayer _zplayer;
         private string[] _supportedFileTypes;
-		
+
         public EngineQueue Queue { get; private set; }
 
         public Player()
         {
             _zplayer = new ZPlayer();
 
-            _supportedFileTypes = _zplayer.GetSupportedFileTypes();
+            _supportedFileTypes = ZPlayer.SupportedFileTypes;
         }
 
-        public string[] GetSupportedFileTypes()
+        public static string[] SupportedFileTypes
         {
-            return _supportedFileTypes;
+            get { return ZPlayer.SupportedFileTypes; }
         }
 
         public bool SupportsFileType(string extension)

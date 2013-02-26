@@ -9,7 +9,7 @@ namespace TITS.Components.Engine
 	{
 		public event EventHandler QueueEmpty;
 
-		public Library.Song Dequeue()
+		public new Library.Song Dequeue()
 		{
 			Library.Song song = base.Dequeue();
 

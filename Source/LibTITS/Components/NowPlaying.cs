@@ -16,6 +16,7 @@ namespace TITS.Components
 
 		public NowPlaying()
 		{
+            _player = new Engine.Player();
 			_player.Queue.QueueEmpty += this.EnqueueNextSong;
 		}
 

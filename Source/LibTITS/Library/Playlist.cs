@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -33,6 +34,21 @@ namespace TITS.Library
                 index++;
                 return this[index];
             }
+        }
+
+        public static Playlist LoadFromDirectory(string filepath)
+        {
+            Playlist jouwgezicht = new Playlist();
+
+            foreach (string file in Directory.EnumerateFiles(filepath, "*.*", SearchOption.TopDirectoryOnly))
+            {
+                FileInfo fi = new FileInfo(file);
+                bool isSupported = Components.Engine.Player.SupportedFileTypes.Contains(fi.Extension);
+                if (!fi.Attributes.HasFlag(FileAttributes.Hidden) && isSupported)
+                    jouwgezicht.Add(new Song(file));
+            }
+
+            return jouwgezicht;
         }
     }
 }

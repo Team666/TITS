@@ -25,7 +25,7 @@ namespace TITS.Library
 
         public Album Album { get; set; }
 
-        public SongInfo Info { get; protected set; }
+        public Meta.SongInfo Info { get; protected set; }
 
         public TimeSpan Length { get; protected set; }
 
