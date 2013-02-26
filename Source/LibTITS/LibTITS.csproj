@@ -48,6 +48,7 @@
     <Compile Include="Components\NowPlaying.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Components\Engine\ZPlayer.cs" />
+    <Compile Include="Library\Meta\Info.cs" />
     <Compile Include="Library\Playlist.cs" />
     <Compile Include="libZPlay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

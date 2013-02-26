@@ -23,13 +23,6 @@ namespace TITS.Library
 
         public bool NowPlaying { get; protected set; }
 
-        public struct SongInfo
-        {
-            string Title  { get; set; }
-            string Album  { get; set; }
-            string Artist { get; set; }
-        }
-
         public Album Album { get; set; }
 
         public SongInfo Info { get; protected set; }
