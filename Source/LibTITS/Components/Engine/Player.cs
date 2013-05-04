@@ -10,6 +10,7 @@ namespace TITS.Components.Engine
         private ZPlayer _zplayer;
         private string[] _supportedFileTypes;
 
+		public static EngineQueue QueueStatic;
         public EngineQueue Queue { get; private set; }
 
         public Player()
@@ -18,6 +19,7 @@ namespace TITS.Components.Engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
 			Queue = new EngineQueue();
+			QueueStatic = Queue;
         }
 
         public static string[] SupportedFileTypes
