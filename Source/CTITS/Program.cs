@@ -25,8 +25,11 @@ namespace TITS
                 //StartLoop(args[0]);
 				string path = EnDanWat();
 
-				PleeTits.Playlist = TITS.Library.Playlist.LoadFromDirectory(path);
-				PleeTits.StartPlaying();
+				if (!string.IsNullOrEmpty(path))
+				{
+					PleeTits.Playlist = TITS.Library.Playlist.LoadFromDirectory(path);
+					PleeTits.StartPlaying();
+				}
             }
             catch (Exception ex)
             {
