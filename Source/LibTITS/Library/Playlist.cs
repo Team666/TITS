@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TITS.Library
 {
-    class Playlist : List<Song>
+    public class Playlist : List<Song>
     {
         private Playlist _original;
 
@@ -31,10 +31,15 @@ namespace TITS.Library
         {
             get
             {
-                index++;
+				IncrementIndex();
                 return this[index];
             }
         }
+
+		private void IncrementIndex()
+		{
+			index = ++index % base.Count;
+		}
 
         public static Playlist LoadFromDirectory(string filepath)
         {

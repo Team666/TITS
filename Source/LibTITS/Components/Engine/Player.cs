@@ -17,6 +17,7 @@ namespace TITS.Components.Engine
             _zplayer = new ZPlayer();
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
+			Queue = new EngineQueue();
         }
 
         public static string[] SupportedFileTypes

@@ -13,7 +13,7 @@ namespace TITS.Components.Engine
 		{
 			Library.Song song = base.Dequeue();
 
-			if (this.Count == 0)
+			if (this.Count == 0 && QueueEmpty != null)
 				QueueEmpty(this, new EventArgs());
 
 			return song;

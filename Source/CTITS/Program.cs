@@ -5,27 +5,49 @@ namespace TITS
 {
     class Program
     {
+		[STAThread]
         static void Main(string[] args)
         {
             Console.Title = "TITS";
 
-            if (args == null || args.Length == 0)
-            {
-                Console.WriteLine("CTITS [filename]\n");
-                Console.WriteLine("\tfilename\tThe name of the file to play.");
-                return;
-            }
+			TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
+
+			//if (args == null || args.Length == 0)
+			//{
+			//	Console.WriteLine("CTITS [filename]\n");
+			//	Console.WriteLine("\tfilename\tThe name of the file to play.");
+			//	return;
+			//}
 
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
             try
             {
-                StartLoop(args[0]);
+                //StartLoop(args[0]);
+				string path = EnDanWat();
+
+				PleeTits.Playlist = TITS.Library.Playlist.LoadFromDirectory(path);
+				PleeTits.StartPlaying();
             }
             catch (Exception ex)
             {
                 Console2.WriteLine(ConsoleColor.Yellow, ex.ToString());
             }
         }
+
+		static string EnDanWat()
+		{
+			using (System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog())
+			{
+				dialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					string path = dialog.SelectedPath;
+					return path;
+				}
+			}
+
+			return null;
+		}
 
         static void StartLoop(string filename)
         {

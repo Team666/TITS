@@ -6,11 +6,11 @@ using TITS.Library;
 
 namespace TITS.Components
 {
-    class NowPlaying
+    public class NowPlaying
     {
         private Engine.Player _player;
 
-        public Playlist Playlist { get; private set; }
+        public Playlist Playlist { get; set; }
 
         public RepeatModes RepeatMode { get; set; }
 
@@ -24,6 +24,12 @@ namespace TITS.Components
         {
             _player.Queue.Enqueue(Playlist.NextSong);
         }
+
+		public void StartPlaying()
+		{
+			EnqueueNextSong(this, EventArgs.Empty);
+			_player.Play(_player.Queue.Dequeue());
+		}
     }
 
     public enum RepeatModes
