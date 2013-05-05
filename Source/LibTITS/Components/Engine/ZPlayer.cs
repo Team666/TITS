@@ -41,6 +41,7 @@ namespace TITS.Components.Engine
         public void Play(Song song)
         {
 			_currentSong = song;
+
 			if (_thread == null)
 			{
 				_thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.PollingPlay));
@@ -69,23 +70,41 @@ namespace TITS.Components.Engine
 			ZPlayer.Engine.GetStreamInfo(ref streamInfo);
 			TStreamTime totalTime = streamInfo.Length;
 
+			Library.Song nextSong = _currentSong;
+
 			while (status.fPlay)
 			{
+				if (Console.KeyAvailable)
+				{
+					ConsoleKeyInfo key = Console.ReadKey(true);
+					if (key.Key == ConsoleKey.RightArrow)
+					{
+						ZPlayer.Engine.OpenFile(Player.QueueStatic.current.FileName, TStreamFormat.sfAutodetect);
+						ZPlayer.Engine.StartPlayback();
+
+						_currentSong = Player.QueueStatic.current;
+
+						Console2.Write(ConsoleColor.DarkGreen, " [Next Song]->\n");
+					}
+				}
+				
 				ZPlayer.Engine.GetStreamInfo(ref streamInfo);
 				totalTime = streamInfo.Length;
 
 				// Enqueue for gapless playback
 				if (status.nSongsInQueue == 0)
 				{
-					ZPlayer.Engine.AddFile(Player.QueueStatic.Dequeue().FileName, TStreamFormat.sfAutodetect);
+					_currentSong = nextSong;
+					nextSong = Player.QueueStatic.Dequeue();
+					ZPlayer.Engine.AddFile(nextSong.FileName, TStreamFormat.sfAutodetect);
 				}
 
 				// Display running time
 				TStreamTime time = default(TStreamTime);
 				ZPlayer.Engine.GetPosition(ref time);
 
-				Console2.Write(ConsoleColor.DarkGreen, "[Playing] ");
-				Console2.Write(ConsoleColor.Green, "{0:0}:{1:00} / {2:0}:{3:00} \r", time.hms.minute, time.hms.second, totalTime.hms.minute, totalTime.hms.second);
+				Console2.Write(ConsoleColor.DarkGreen, "\r [Playing] {0} ", _currentSong.FileName);
+				Console2.Write(ConsoleColor.Green, "{0:0}:{1:00} / {2:0}:{3:00}", time.hms.minute, time.hms.second, totalTime.hms.minute, totalTime.hms.second);
 
 				System.Threading.Thread.Sleep(10);
 				ZPlayer.Engine.GetStatus(ref status);
