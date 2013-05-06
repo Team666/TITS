@@ -22,12 +22,15 @@ namespace TITS
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
             try
             {
-                //StartLoop(args[0]);
-				string path = EnDanWat();
+                string path = null;
+                if (args != null && args.Length > 0)
+                    path = args[0];
+                if (path == null || (!System.IO.File.Exists(path) && !System.IO.Directory.Exists(path)))
+                    path = EnDanWat();
 
 				if (!string.IsNullOrEmpty(path))
 				{
-					PleeTits.Playlist = TITS.Library.Playlist.LoadFromDirectory(path);
+					PleeTits.Playlist = TITS.Library.Playlist.Load(path);
 					PleeTits.StartPlaying();
 				}
             }
