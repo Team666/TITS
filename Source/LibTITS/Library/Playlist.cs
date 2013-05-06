@@ -88,8 +88,17 @@ namespace TITS.Library
             byte[] head = Utility.PeekFile(path, 5);
             switch (Encoding.UTF8.GetString(head))
             {
-                case "<?zpl": // Zune Playlist: \smil\body\media[src]
-                    // TODO
+                case "<?zpl": // Zune Playlist
+                    System.Xml.XmlDocument xd = new System.Xml.XmlDocument();
+                    xd.Load(path);
+                    foreach (System.Xml.XmlNode media in xd.SelectNodes("/smil/body/seq/media"))
+                    {
+                        if (media.Attributes["src"] != null)
+                        {
+                            string src = media.Attributes["src"].Value;
+                            jouwgezicht.Add(new Song(src));
+                        }
+                    }
                     break;
                     
                 default:
