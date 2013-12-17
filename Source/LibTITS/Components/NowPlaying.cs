@@ -10,24 +10,40 @@ namespace TITS.Components
     {
         private Engine.Player _player;
 
+        /// <summary>
+        /// Gets or sets the currently playing playlist.
+        /// </summary>
         public Playlist Playlist { get; set; }
 
+        /// <summary>
+        /// Gets or sets the current repeat mode.
+        /// </summary>
         public RepeatModes RepeatMode { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the NowPlaying class.
+        /// </summary>
 		public NowPlaying()
 		{
             _player = new Engine.Player();
-			_player.Queue.QueueEmpty += this.EnqueueNextSong;
+            _player.Queue.QueueEmpty += (sender, e) => { this.EnqueueNextSong(); };
 		}
 
-        public void EnqueueNextSong(object sender, EventArgs e)
+        /// <summary>
+        /// Enqueues the next song for playback, and updates the playlist index.
+        /// </summary>
+        public void EnqueueNextSong()
         {
             _player.Queue.Enqueue(Playlist.NextSong);
+            Playlist.Index++;
         }
 
+        /// <summary>
+        /// Starts playback.
+        /// </summary>
 		public void StartPlaying()
 		{
-			EnqueueNextSong(this, EventArgs.Empty);
+			EnqueueNextSong();
 			_player.Play(_player.Queue.Dequeue());
 		}
     }

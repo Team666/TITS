@@ -20,6 +20,7 @@ namespace TITS
                     PleeTits.Playlist = LoadMultiple(args);
                 else
                     PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: true));
+
 				PleeTits.StartPlaying();
             }
             catch (Exception ex)

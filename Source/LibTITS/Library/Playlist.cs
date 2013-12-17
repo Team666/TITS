@@ -26,34 +26,37 @@ namespace TITS.Library
             get { return (base.Count == 0); }
         }
 
+        /// <summary>
+        /// Gets the currently playing song in the playlist.
+        /// </summary>
         public Song CurrentSong
         {
             get
             {
-                if (index == -1)
+                if (index < 0)
                     return null;
-
-                return this[index];
+                return this[Index];
             }
         }
 
+        /// <summary>
+        /// Gets the next song in the playlist.
+        /// </summary>
         public Song NextSong
         {
             get
             {
-                IncrementIndex();
-
-                if (index >= 0)
-                    return this[index];
-                else
-                    return null;
+                return this[(Index + 1) % base.Count];
             }
         }
 
-        private void IncrementIndex()
+        /// <summary>
+        /// Gets or sets the index of the current song.
+        /// </summary>
+        public int Index
         {
-            if (base.Count > 0)
-                index = ++index % base.Count;
+            get { return index; }
+            set { index = value % base.Count; }
         }
 
         /// <summary>
