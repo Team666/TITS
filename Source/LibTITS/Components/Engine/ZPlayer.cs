@@ -95,7 +95,7 @@ namespace TITS.Components.Engine
             Engine.Close();
 
             if (_thread.IsAlive)
-                _thread.Abort();
+                _thread.Join(100);
             _thread = null;
 
             if (PlaybackStopped != null) PlaybackStopped(this, new EventArgs());
@@ -177,6 +177,9 @@ namespace TITS.Components.Engine
 				    ZPlayer.Engine.GetStatus(ref status);
                 }
 			}
+
+            Console2.WriteLine(ConsoleColor.Yellow, "WARNING! POLLING THREAD HAS STOPPED!");
+            System.Diagnostics.Debug.WriteLine("Polling thread has stopped!", "Warning");
 		}
 
         private static ZPlay InitializeEngine()
