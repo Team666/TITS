@@ -85,12 +85,15 @@ namespace TITS.Components.Engine
         {
             if (_thread == null) throw new InvalidOperationException("Unable to skip to next song while playback has stopped.");
 
-            _currentSong = Player.QueueStatic.current;
+            lock (_engine)
+            {
+                _currentSong = Player.QueueStatic.current;
 
-            if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
-                throw new EngineException(ZPlayer.Engine.GetError());
-            if (!Engine.StartPlayback())
-                throw new EngineException(ZPlayer.Engine.GetError());
+                if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
+                    throw new EngineException(ZPlayer.Engine.GetError());
+                if (!Engine.StartPlayback())
+                    throw new EngineException(ZPlayer.Engine.GetError());
+            }
 
             if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
         }
@@ -113,13 +116,17 @@ namespace TITS.Components.Engine
 			TStreamStatus status = default(TStreamStatus);
 			TStreamInfo streamInfo = default(TStreamInfo);
 
-			ZPlayer.Engine.GetStatus(ref status);
-			ZPlayer.Engine.GetStreamInfo(ref streamInfo);
+            lock (_engine)
+            {
+                ZPlayer.Engine.GetStatus(ref status);
+                ZPlayer.Engine.GetStreamInfo(ref streamInfo);
+            }
+
 			TStreamTime totalTime = streamInfo.Length;
 
 			Library.Song nextSong = _currentSong;
 
-			while (status.fPlay)
+            while (status.fPlay)
 			{
 				ZPlayer.Engine.GetStreamInfo(ref streamInfo);
 				totalTime = streamInfo.Length;
@@ -136,11 +143,15 @@ namespace TITS.Components.Engine
 				TStreamTime time = default(TStreamTime);
 				ZPlayer.Engine.GetPosition(ref time);
 
-				Console2.Write(ConsoleColor.DarkGreen, "\r [Playing] {0} ", _currentSong.FileName);
-				Console2.Write(ConsoleColor.Green, "{0:0}:{1:00} / {2:0}:{3:00}", time.hms.minute, time.hms.second, totalTime.hms.minute, totalTime.hms.second);
+                Console2.Write(ConsoleColor.DarkGreen, "\r [Playing] {0} ", _currentSong.FileName);
+                Console2.Write(ConsoleColor.Green, "{0:0}:{1:00} / {2:0}:{3:00}", time.hms.minute, time.hms.second, totalTime.hms.minute, totalTime.hms.second);
 
 				System.Threading.Thread.Sleep(10);
-				ZPlayer.Engine.GetStatus(ref status);
+
+                lock (_engine)
+                {
+				    ZPlayer.Engine.GetStatus(ref status);
+                }
 			}
 		}
 
