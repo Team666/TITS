@@ -10,6 +10,7 @@ namespace TITS.Components.Engine
         event EventHandler PlaybackStopped;
 
         PlaybackStatus Status { get; }
+        TimeSpan Position { get; }
 
         bool SupportsFileType(string extension);
 

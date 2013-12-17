@@ -7,13 +7,13 @@ namespace TITS
 {
     class Program
     {
-		[STAThread]
+        [STAThread]
         static void Main(string[] args)
         {
             Console.Title = "TITS";
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
 
-			TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
+            TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
             try
             {
                 if (args != null && args.Length > 0)
@@ -21,8 +21,20 @@ namespace TITS
                 else
                     PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: true));
 
-                PleeTits.SongChanged += (sender, e) => { Interaction.PrintSong(e.Song); };
-				PleeTits.StartPlaying();
+                PleeTits.PlaybackStarted += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Playback started: " + e.Song.ToString());
+                };
+                PleeTits.SongChanged += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Song changed: " + e.Song.ToString());
+                    Console.WriteLine();
+                };
+                PleeTits.PlaybackStopped += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Playback stopped");
+                };
+                PleeTits.StartPlaying();
 
                 while (true)
                 {
@@ -50,6 +62,9 @@ namespace TITS
                         }
                     }
 
+                    Interaction.PrintSong(PleeTits.Playlist.CurrentSong,
+                        PleeTits.Position,
+                        PleeTits.Status);
                     System.Threading.Thread.Sleep(100);
                 }
             }

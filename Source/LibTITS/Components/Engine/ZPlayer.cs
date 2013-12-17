@@ -18,6 +18,11 @@ namespace TITS.Components.Engine
         public event EventHandler<SongEventArgs> SongChanged;
         public event EventHandler PlaybackStopped;
 
+        public ZPlayer()
+        {
+            _engine = InitializeEngine();
+        }
+
         public static string[] SupportedFileTypes
         {
             get { return _supportedFileTypes; }
@@ -34,6 +39,17 @@ namespace TITS.Components.Engine
                     return PlaybackStatus.Playing;
                 else
                     return PlaybackStatus.Stopped;
+            }
+        }
+
+        public TimeSpan Position
+        {
+            get
+            {
+                TStreamTime time = default(TStreamTime);
+                ZPlayer.Engine.GetPosition(ref time);
+
+                return time.ToTimeSpan();
             }
         }
 
@@ -87,6 +103,7 @@ namespace TITS.Components.Engine
 
             lock (_engine)
             {
+                // Get the next song from the queue
                 _currentSong = Player.QueueStatic.current;
 
                 if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
@@ -100,37 +117,33 @@ namespace TITS.Components.Engine
 
 		private void PollingPlay()
 		{
-			if (!ZPlayer.Engine.OpenFile(_currentSong.FileName, libZPlay.TStreamFormat.sfAutodetect))
-			{
-				string error = ZPlayer.Engine.GetError();
-				throw new EngineException(error);
-			}
-
-            if (!ZPlayer.Engine.StartPlayback())
+            lock (_engine)
             {
-                throw new EngineException(ZPlayer.Engine.GetError());
+                if (!ZPlayer.Engine.OpenFile(_currentSong.FileName, libZPlay.TStreamFormat.sfAutodetect))
+                {
+                    string error = ZPlayer.Engine.GetError();
+                    throw new EngineException(error);
+                }
+
+                if (!ZPlayer.Engine.StartPlayback())
+                {
+                    throw new EngineException(ZPlayer.Engine.GetError());
+                }
             }
 
             if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(_currentSong));
 
 			TStreamStatus status = default(TStreamStatus);
-			TStreamInfo streamInfo = default(TStreamInfo);
 
             lock (_engine)
             {
                 ZPlayer.Engine.GetStatus(ref status);
-                ZPlayer.Engine.GetStreamInfo(ref streamInfo);
             }
-
-			TStreamTime totalTime = streamInfo.Length;
 
 			Library.Song nextSong = _currentSong;
 
             while (status.fPlay)
 			{
-				ZPlayer.Engine.GetStreamInfo(ref streamInfo);
-				totalTime = streamInfo.Length;
-
 				// Enqueue for gapless playback
 				if (status.nSongsInQueue == 0)
 				{
@@ -138,13 +151,6 @@ namespace TITS.Components.Engine
 					nextSong = Player.QueueStatic.Dequeue();
 					ZPlayer.Engine.AddFile(nextSong.FileName, TStreamFormat.sfAutodetect);
 				}
-
-				// Display running time
-				TStreamTime time = default(TStreamTime);
-				ZPlayer.Engine.GetPosition(ref time);
-
-                Console2.Write(ConsoleColor.DarkGreen, "\r [Playing] {0} ", _currentSong.FileName);
-                Console2.Write(ConsoleColor.Green, "{0:0}:{1:00} / {2:0}:{3:00}", time.hms.minute, time.hms.second, totalTime.hms.minute, totalTime.hms.second);
 
 				System.Threading.Thread.Sleep(10);
 

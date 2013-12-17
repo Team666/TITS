@@ -50,6 +50,11 @@ namespace TITS.Components.Engine
             get { return _zplayer.Status; }
         }
 
+        public TimeSpan Position
+        {
+            get { return _zplayer.Position; }
+        }
+
         public bool SupportsFileType(string extension)
         {
             return _supportedFileTypes.Contains(extension);

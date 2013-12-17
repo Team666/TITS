@@ -22,9 +22,20 @@ namespace TITS
             return new string[0];
         }
 
-        public static void PrintSong(Library.Song song)
+        public static void PrintSong(Library.Song song, TimeSpan position, Components.Engine.PlaybackStatus status)
         {
-            Console2.WriteLine(ConsoleColor.DarkGreen, "Song changed to {0}", song);
+            switch (status)
+            {
+                case TITS.Components.Engine.PlaybackStatus.Stopped:
+                    Console2.Write(ConsoleColor.DarkGreen, "= ");
+                    break;
+                case TITS.Components.Engine.PlaybackStatus.Playing:
+                    Console2.Write(ConsoleColor.DarkGreen, "> ");
+                    break;
+            }
+
+            Console2.Write(ConsoleColor.DarkGreen, "{0} ", song);
+            Console2.Write(ConsoleColor.Green, "{0:m\\:ss}\r", position);
         }
     }
 }

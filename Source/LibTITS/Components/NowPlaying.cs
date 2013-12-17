@@ -57,6 +57,14 @@ namespace TITS.Components
         }
 
         /// <summary>
+        /// Gets the position of the currently playing song.
+        /// </summary>
+        public TimeSpan Position
+        {
+            get { return _player.Position; }
+        }
+
+        /// <summary>
         /// Gets whether music is currently playing or not.
         /// </summary>
         public bool IsPlaying
