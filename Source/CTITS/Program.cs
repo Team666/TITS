@@ -29,10 +29,13 @@ namespace TITS
                     if (Console.KeyAvailable)
                     {
                         ConsoleKeyInfo key = Console.ReadKey(true);
+                        while (Console.KeyAvailable)
+                        {
+                            key = Console.ReadKey(true);
+                        }
 
                         // Stopping playback has to be outside of the switch for break to work
-                        if (key.Key == ConsoleKey.Escape
-                         || key.Key == ConsoleKey.MediaStop)
+                        if (key.Key == ConsoleKey.Escape || key.Key == ConsoleKey.MediaStop)
                         {
                             PleeTits.Stop();
                             break;
