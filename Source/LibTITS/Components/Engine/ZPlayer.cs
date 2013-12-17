@@ -15,6 +15,7 @@ namespace TITS.Components.Engine
         private static string[] _supportedFileTypes = { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
 
         public event EventHandler<SongEventArgs> PlaybackStarted;
+        public event EventHandler<SongEventArgs> PlaybackPaused;
         public event EventHandler<SongEventArgs> SongChanged;
         public event EventHandler PlaybackStopped;
 
@@ -35,7 +36,9 @@ namespace TITS.Components.Engine
                 TStreamStatus status = default(TStreamStatus);
                 Engine.GetStatus(ref status);
 
-                if (status.fPlay)
+                if (status.fPause)
+                    return PlaybackStatus.Paused;
+                else if (status.fPlay)
                     return PlaybackStatus.Playing;
                 else
                     return PlaybackStatus.Stopped;
@@ -95,6 +98,20 @@ namespace TITS.Components.Engine
             _thread = null;
 
             if (PlaybackStopped != null) PlaybackStopped(this, new EventArgs());
+        }
+
+        public void Pause()
+        {
+            if (Status == PlaybackStatus.Playing)
+            {
+                Engine.PausePlayback();
+                if (PlaybackPaused != null) PlaybackPaused(this, new SongEventArgs(_currentSong));
+            }
+            else if (Status == PlaybackStatus.Paused)
+            {
+                Engine.ResumePlayback();
+                if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(_currentSong));
+            }
         }
 
         public void Next()

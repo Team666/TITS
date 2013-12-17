@@ -8,6 +8,7 @@ namespace TITS.Components.Engine
     public enum PlaybackStatus
     {
         Stopped,
-        Playing
+        Playing,
+        Paused
     }
 }

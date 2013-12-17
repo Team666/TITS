@@ -25,6 +25,10 @@ namespace TITS
                 {
                     System.Diagnostics.Debug.WriteLine("Playback started: " + e.Song.ToString());
                 };
+                PleeTits.PlaybackPaused += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("QUIT LOLLYGAGGING! " + e.Song.ToString());
+                };
                 PleeTits.SongChanged += (sender, e) =>
                 {
                     System.Diagnostics.Debug.WriteLine("Song changed: " + e.Song.ToString());
@@ -58,6 +62,10 @@ namespace TITS
                             case ConsoleKey.RightArrow:
                             case ConsoleKey.MediaNext:
                                 PleeTits.Next();
+                                break;
+                            case ConsoleKey.Spacebar:
+                            case ConsoleKey.MediaPlay:
+                                PleeTits.Pause();
                                 break;
                         }
                     }

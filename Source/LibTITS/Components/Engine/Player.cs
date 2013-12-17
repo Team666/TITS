@@ -16,6 +16,12 @@ namespace TITS.Components.Engine
             remove { _zplayer.PlaybackStarted -= value; }
         }
 
+        public event EventHandler<SongEventArgs> PlaybackPaused
+        {
+            add { _zplayer.PlaybackPaused += value; }
+            remove { _zplayer.PlaybackPaused -= value; }
+        }
+
         public event EventHandler<SongEventArgs> SongChanged
         {
             add { _zplayer.SongChanged += value; }
@@ -76,6 +82,11 @@ namespace TITS.Components.Engine
         public void Stop()
         {
             _zplayer.Stop();
+        }
+
+        public void Pause()
+        {
+            _zplayer.Pause();
         }
 
         public void Next()

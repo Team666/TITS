@@ -27,7 +27,10 @@ namespace TITS
             switch (status)
             {
                 case TITS.Components.Engine.PlaybackStatus.Stopped:
-                    Console2.Write(ConsoleColor.DarkGreen, "= ");
+                    Console2.Write(ConsoleColor.DarkGreen, "-");
+                    break;
+                case Components.Engine.PlaybackStatus.Paused:
+                    Console2.Write(ConsoleColor.DarkGreen, "! ");
                     break;
                 case TITS.Components.Engine.PlaybackStatus.Playing:
                     Console2.Write(ConsoleColor.DarkGreen, "> ");
