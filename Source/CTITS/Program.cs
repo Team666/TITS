@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using libZPlay;
 
 namespace TITS
@@ -9,51 +11,35 @@ namespace TITS
         static void Main(string[] args)
         {
             Console.Title = "TITS";
+            Console2.WriteLine(ConsoleColor.White, "TITS Console");
 
 			TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
-
-			//if (args == null || args.Length == 0)
-			//{
-			//	Console.WriteLine("CTITS [filename]\n");
-			//	Console.WriteLine("\tfilename\tThe name of the file to play.");
-			//	return;
-			//}
-
-            Console2.WriteLine(ConsoleColor.White, "TITS Console");
             try
             {
-                string path = null;
                 if (args != null && args.Length > 0)
-                    path = args[0];
-                if (path == null || (!System.IO.File.Exists(path) && !System.IO.Directory.Exists(path)))
-                    path = EnDanWat();
-
-				if (!string.IsNullOrEmpty(path))
-				{
-					PleeTits.Playlist = TITS.Library.Playlist.Load(path);
-					PleeTits.StartPlaying();
-				}
+                    PleeTits.Playlist = LoadMultiple(args);
+                else
+                    PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: true));
+				PleeTits.StartPlaying();
             }
             catch (Exception ex)
             {
-                Console2.WriteLine(ConsoleColor.Yellow, ex.ToString());
+                Console2.WriteLine(ConsoleColor.Red, ex.ToString());
             }
         }
 
-		static string EnDanWat()
-		{
-			using (System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog())
-			{
-				dialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-				{
-					string path = dialog.SelectedPath;
-					return path;
-				}
-			}
-
-			return null;
-		}
+        static Library.Playlist LoadMultiple(IEnumerable<string> items)
+        {
+            Library.Playlist playlist = new Library.Playlist();
+            if (items != null)
+            {
+                foreach (string item in items)
+                {
+                    playlist.Add(item);
+                }
+            }
+            return playlist;
+        }
 
         static void StartLoop(string filename)
         {

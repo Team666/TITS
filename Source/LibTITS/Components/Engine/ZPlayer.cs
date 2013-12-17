@@ -40,6 +40,8 @@ namespace TITS.Components.Engine
 
         public void Play(Song song)
         {
+            if (song == null) throw new ArgumentNullException("song");
+
 			_currentSong = song;
 
 			if (_thread == null)
