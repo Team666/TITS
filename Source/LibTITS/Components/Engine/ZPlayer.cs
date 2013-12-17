@@ -84,6 +84,7 @@ namespace TITS.Components.Engine
 			if (_thread == null)
 			{
 				_thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.PollingPlay));
+                _thread.Name = "Polling play";
 				_thread.Start();
 			}
         }
@@ -159,7 +160,7 @@ namespace TITS.Components.Engine
 
 			Library.Song nextSong = _currentSong;
 
-            while (status.fPlay)
+            while (status.fPlay || status.fPause)
 			{
 				// Enqueue for gapless playback
 				if (status.nSongsInQueue == 0)
