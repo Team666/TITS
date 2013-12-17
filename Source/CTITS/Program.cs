@@ -21,7 +21,34 @@ namespace TITS
                 else
                     PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: true));
 
+                PleeTits.SongChanged += (sender, e) => { Interaction.PrintSong(e.Song); };
 				PleeTits.StartPlaying();
+
+                while (true)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo key = Console.ReadKey(true);
+
+                        // Stopping playback has to be outside of the switch for break to work
+                        if (key.Key == ConsoleKey.Escape
+                         || key.Key == ConsoleKey.MediaStop)
+                        {
+                            PleeTits.Stop();
+                            break;
+                        }
+
+                        switch (key.Key)
+                        {
+                            case ConsoleKey.RightArrow:
+                            case ConsoleKey.MediaNext:
+                                PleeTits.Next();
+                                break;
+                        }
+                    }
+
+                    System.Threading.Thread.Sleep(100);
+                }
             }
             catch (Exception ex)
             {

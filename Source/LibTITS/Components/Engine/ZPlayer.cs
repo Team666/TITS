@@ -14,9 +14,27 @@ namespace TITS.Components.Engine
 		private System.Threading.Thread _thread;
         private static string[] _supportedFileTypes = { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
 
+        public event EventHandler<SongEventArgs> PlaybackStarted;
+        public event EventHandler<SongEventArgs> SongChanged;
+        public event EventHandler PlaybackStopped;
+
         public static string[] SupportedFileTypes
         {
             get { return _supportedFileTypes; }
+        }
+
+        public PlaybackStatus Status
+        {
+            get
+            {
+                TStreamStatus status = default(TStreamStatus);
+                Engine.GetStatus(ref status);
+
+                if (status.fPlay)
+                    return PlaybackStatus.Playing;
+                else
+                    return PlaybackStatus.Stopped;
+            }
         }
 
         public bool SupportsFileType(string extension)
@@ -51,6 +69,32 @@ namespace TITS.Components.Engine
 			}
         }
 
+        public void Stop()
+        {
+            Engine.StopPlayback();
+            Engine.Close();
+
+            if (_thread.IsAlive)
+                _thread.Abort();
+            _thread = null;
+
+            if (PlaybackStopped != null) PlaybackStopped(this, new EventArgs());
+        }
+
+        public void Next()
+        {
+            if (_thread == null) throw new InvalidOperationException("Unable to skip to next song while playback has stopped.");
+
+            _currentSong = Player.QueueStatic.current;
+
+            if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
+                throw new EngineException(ZPlayer.Engine.GetError());
+            if (!Engine.StartPlayback())
+                throw new EngineException(ZPlayer.Engine.GetError());
+
+            if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
+        }
+
 		private void PollingPlay()
 		{
 			if (!ZPlayer.Engine.OpenFile(_currentSong.FileName, libZPlay.TStreamFormat.sfAutodetect))
@@ -59,11 +103,12 @@ namespace TITS.Components.Engine
 				throw new EngineException(error);
 			}
 
-           
             if (!ZPlayer.Engine.StartPlayback())
             {
                 throw new EngineException(ZPlayer.Engine.GetError());
             }
+
+            if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(_currentSong));
 
 			TStreamStatus status = default(TStreamStatus);
 			TStreamInfo streamInfo = default(TStreamInfo);
@@ -76,20 +121,6 @@ namespace TITS.Components.Engine
 
 			while (status.fPlay)
 			{
-				if (Console.KeyAvailable)
-				{
-					ConsoleKeyInfo key = Console.ReadKey(true);
-					if (key.Key == ConsoleKey.RightArrow)
-					{
-						ZPlayer.Engine.OpenFile(Player.QueueStatic.current.FileName, TStreamFormat.sfAutodetect);
-						ZPlayer.Engine.StartPlayback();
-
-						_currentSong = Player.QueueStatic.current;
-
-						Console2.Write(ConsoleColor.DarkGreen, " [Next Song]->\n");
-					}
-				}
-				
 				ZPlayer.Engine.GetStreamInfo(ref streamInfo);
 				totalTime = streamInfo.Length;
 
@@ -111,7 +142,6 @@ namespace TITS.Components.Engine
 				System.Threading.Thread.Sleep(10);
 				ZPlayer.Engine.GetStatus(ref status);
 			}
-
 		}
 
         private static ZPlay InitializeEngine()
@@ -123,6 +153,5 @@ namespace TITS.Components.Engine
                 throw new EngineException(engine.GetError());
             return engine;
         }
-
     }
 }

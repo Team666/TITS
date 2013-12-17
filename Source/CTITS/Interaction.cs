@@ -21,5 +21,10 @@ namespace TITS
 
             return new string[0];
         }
+
+        public static void PrintSong(Library.Song song)
+        {
+            Console2.WriteLine(ConsoleColor.DarkGreen, "Song changed to {0}", song);
+        }
     }
 }
