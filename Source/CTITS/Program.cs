@@ -1,56 +1,99 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using libZPlay;
 
 namespace TITS
 {
     class Program
     {
-		[STAThread]
+        [STAThread]
         static void Main(string[] args)
         {
             Console.Title = "TITS";
-
-			TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
-
-			//if (args == null || args.Length == 0)
-			//{
-			//	Console.WriteLine("CTITS [filename]\n");
-			//	Console.WriteLine("\tfilename\tThe name of the file to play.");
-			//	return;
-			//}
-
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
+
+            TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
             try
             {
-                //StartLoop(args[0]);
-				string path = EnDanWat();
+                if (args != null && args.Length > 0)
+                    PleeTits.Playlist = LoadMultiple(args);
+                else
+                    PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: true));
 
-				if (!string.IsNullOrEmpty(path))
-				{
-					PleeTits.Playlist = TITS.Library.Playlist.LoadFromDirectory(path);
-					PleeTits.StartPlaying();
-				}
+                PleeTits.PlaybackStarted += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Playback started: " + e.Song.ToString());
+                };
+                PleeTits.PlaybackPaused += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("QUIT LOLLYGAGGING! " + e.Song.ToString());
+                };
+                PleeTits.SongChanged += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Song changed: " + e.Song.ToString());
+                    Console.WriteLine();
+                };
+                PleeTits.PlaybackStopped += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Playback stopped");
+                };
+                PleeTits.StartPlaying();
+
+                while (true)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo key = Console.ReadKey(true);
+                        while (Console.KeyAvailable)
+                        {
+                            key = Console.ReadKey(true);
+                        }
+
+                        // Stopping playback has to be outside of the switch for break to work
+                        if (key.Key == ConsoleKey.Escape || key.Key == ConsoleKey.MediaStop)
+                        {
+                            PleeTits.Stop();
+                            break;
+                        }
+
+                        switch (key.Key)
+                        {
+                            case ConsoleKey.RightArrow:
+                            case ConsoleKey.MediaNext:
+                                PleeTits.Next();
+                                break;
+                            case ConsoleKey.Spacebar:
+                            case ConsoleKey.MediaPlay:
+                                PleeTits.Pause();
+                                break;
+                        }
+                    }
+
+                    Interaction.PrintSong(PleeTits.Playlist.CurrentSong,
+                        PleeTits.Position,
+                        PleeTits.Status);
+                    System.Threading.Thread.Sleep(100);
+                }
             }
             catch (Exception ex)
             {
-                Console2.WriteLine(ConsoleColor.Yellow, ex.ToString());
+                Console2.WriteLine(ConsoleColor.Red, ex.ToString());
             }
         }
 
-		static string EnDanWat()
-		{
-			using (System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog())
-			{
-				dialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-				{
-					string path = dialog.SelectedPath;
-					return path;
-				}
-			}
-
-			return null;
-		}
+        static Library.Playlist LoadMultiple(IEnumerable<string> items)
+        {
+            Library.Playlist playlist = new Library.Playlist();
+            if (items != null)
+            {
+                foreach (string item in items)
+                {
+                    playlist.Add(item);
+                }
+            }
+            return playlist;
+        }
 
         static void StartLoop(string filename)
         {

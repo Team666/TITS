@@ -99,3 +99,9 @@ Planned features
   One way to show this, would be to show a percentage for each song that indicates the average
   length played. 100% would indicate a song you never skipped, and 0% would indicate a song you
   never actually listened.
+
+Milestones
+----------
+* **v0.001 Alpha - 'Will Fail'**
+
+  *Playback of files in a single directory achieved*

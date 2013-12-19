@@ -36,5 +36,10 @@ namespace TITS.Library
 
             this.FileName = fileName;
         }
+
+        public override string ToString()
+        {
+            return FileName;
+        }
     }
 }

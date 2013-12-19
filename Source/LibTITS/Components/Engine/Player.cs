@@ -10,6 +10,31 @@ namespace TITS.Components.Engine
         private ZPlayer _zplayer;
         private string[] _supportedFileTypes;
 
+        public event EventHandler<SongEventArgs> PlaybackStarted
+        {
+            add { _zplayer.PlaybackStarted += value; }
+            remove { _zplayer.PlaybackStarted -= value; }
+        }
+
+        public event EventHandler<SongEventArgs> PlaybackPaused
+        {
+            add { _zplayer.PlaybackPaused += value; }
+            remove { _zplayer.PlaybackPaused -= value; }
+        }
+
+        public event EventHandler<SongEventArgs> SongChanged
+        {
+            add { _zplayer.SongChanged += value; }
+            remove { _zplayer.SongChanged -= value; }
+        }
+
+        public event EventHandler PlaybackStopped
+        {
+            add { _zplayer.PlaybackStopped += value; }
+            remove { _zplayer.PlaybackStopped -= value; }
+        }
+
+		public static EngineQueue QueueStatic;
         public EngineQueue Queue { get; private set; }
 
         public Player()
@@ -18,11 +43,22 @@ namespace TITS.Components.Engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
 			Queue = new EngineQueue();
+			QueueStatic = Queue;
         }
 
         public static string[] SupportedFileTypes
         {
             get { return ZPlayer.SupportedFileTypes; }
+        }
+
+        public PlaybackStatus Status
+        {
+            get { return _zplayer.Status; }
+        }
+
+        public TimeSpan Position
+        {
+            get { return _zplayer.Position; }
         }
 
         public bool SupportsFileType(string extension)
@@ -43,5 +79,19 @@ namespace TITS.Components.Engine
             _zplayer.Play(song);
         }
 
+        public void Stop()
+        {
+            _zplayer.Stop();
+        }
+
+        public void Pause()
+        {
+            _zplayer.Pause();
+        }
+
+        public void Next()
+        {
+            _zplayer.Next();
+        }
     }
 }

@@ -9,9 +9,13 @@ namespace TITS.Components.Engine
 	{
 		public event EventHandler QueueEmpty;
 
+		public Library.Song current { get { return _current; } }
+		private Library.Song _current;
+
 		public new Library.Song Dequeue()
 		{
 			Library.Song song = base.Dequeue();
+			_current = song;
 
 			if (this.Count == 0 && QueueEmpty != null)
 				QueueEmpty(this, new EventArgs());
