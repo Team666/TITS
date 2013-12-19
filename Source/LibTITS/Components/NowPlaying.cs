@@ -10,34 +10,49 @@ namespace TITS.Components
     {
         private Engine.Player _player;
 
+        /// <summary>
+        /// Occurs when the engine has started or resumed playback.
+        /// </summary>
         public event EventHandler<Engine.SongEventArgs> PlaybackStarted
         {
             add { _player.PlaybackStarted += value; }
             remove { _player.PlaybackStarted -= value; }
         }
 
+        /// <summary>
+        /// Occurs when the engine has paused playback.
+        /// </summary>
         public event EventHandler<Engine.SongEventArgs> PlaybackPaused
         {
             add { _player.PlaybackPaused += value; }
             remove { _player.PlaybackPaused -= value; }
         }
 
+        /// <summary>
+        /// Occurs when the engine has started playing a different song.
+        /// </summary>
         public event EventHandler<Engine.SongEventArgs> SongChanged
         {
             add { _player.SongChanged += value; }
             remove { _player.SongChanged -= value; }
         }
 
-        public event EventHandler<Engine.SongEventArgs> PlaybackError
-        {
-            add { _player.PlaybackError += value; }
-            remove { _player.PlaybackError -= value; }
-        }
-
+        /// <summary>
+        /// Occurs when the engine has stopped playback.
+        /// </summary>
         public event EventHandler PlaybackStopped
         {
             add { _player.PlaybackStopped += value; }
             remove { _player.PlaybackStopped -= value; }
+        }
+
+        /// <summary>
+        /// Occurs when a file could not be played.
+        /// </summary>
+        public event EventHandler<Engine.SongEventArgs> PlaybackError
+        {
+            add { _player.PlaybackError += value; }
+            remove { _player.PlaybackError -= value; }
         }
 
 
