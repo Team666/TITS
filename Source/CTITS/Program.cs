@@ -19,7 +19,7 @@ namespace TITS
                 if (args != null && args.Length > 0)
                     PleeTits.Playlist = LoadMultiple(args);
                 else
-                    PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: true));
+                    PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: false));
 
                 PleeTits.PlaybackStarted += (sender, e) =>
                 {
@@ -79,6 +79,9 @@ namespace TITS
             catch (Exception ex)
             {
                 Console2.WriteLine(ConsoleColor.Red, ex.ToString());
+#if DEBUG
+                throw ex;
+#endif
             }
         }
 
@@ -89,6 +92,8 @@ namespace TITS
             {
                 foreach (string item in items)
                 {
+                    if (item.EndsWith(".zpl"))
+                        playlist.AddFromFile(item);
                     playlist.Add(item);
                 }
             }
