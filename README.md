@@ -4,7 +4,7 @@ TITS
 Overview
 --------
 
-TITS is the codename for a music player. For details, see http://horsedrowner.net/tits.
+TITS is the codename for a music player. 
 
 Quick Start
 -----------
@@ -99,9 +99,3 @@ Planned features
   One way to show this, would be to show a percentage for each song that indicates the average
   length played. 100% would indicate a song you never skipped, and 0% would indicate a song you
   never actually listened.
-
-Milestones
-----------
-* **v0.001 Alpha - 'Will Fail'**
-
-  *Playback of files in a single directory achieved*
