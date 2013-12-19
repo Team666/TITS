@@ -9,7 +9,7 @@ namespace TITS.Components.Engine
 	{
 		public event EventHandler QueueEmpty;
 
-		public Library.Song current { get { return _current; } }
+		public Library.Song Current { get { return _current; } }
 		private Library.Song _current;
 
 		public new Library.Song Dequeue()

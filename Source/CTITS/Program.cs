@@ -38,6 +38,10 @@ namespace TITS
                 {
                     System.Diagnostics.Debug.WriteLine("Playback stopped");
                 };
+                PleeTits.PlaybackError += (sender, e) =>
+                {
+                    Console2.WriteLine(ConsoleColor.Yellow, "There was a problem while trying to play {0}", e.Song);
+                };
                 PleeTits.StartPlaying();
 
                 while (true)

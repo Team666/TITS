@@ -28,6 +28,12 @@ namespace TITS.Components
             remove { _player.SongChanged -= value; }
         }
 
+        public event EventHandler<Engine.SongEventArgs> PlaybackError
+        {
+            add { _player.PlaybackError += value; }
+            remove { _player.PlaybackError -= value; }
+        }
+
         public event EventHandler PlaybackStopped
         {
             add { _player.PlaybackStopped += value; }

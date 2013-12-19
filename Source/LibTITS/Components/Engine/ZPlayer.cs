@@ -121,7 +121,7 @@ namespace TITS.Components.Engine
             lock (_engine)
             {
                 // Get the next song from the queue
-                _currentSong = Player.QueueStatic.current;
+                _currentSong = Player.QueueStatic.Current;
 
                 if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
                     throw new EngineException(Engine.GetError());
@@ -156,9 +156,9 @@ namespace TITS.Components.Engine
                     // param2: number of songs remaining in gapless queue
                     // return: not used 
                     Debug.WriteLine("MsgNextSongAsync: {0} => {1}", 
-                        _currentSong, Player.QueueStatic.current);
+                        _currentSong, Player.QueueStatic.Current);
 
-                    _currentSong = Player.QueueStatic.current;
+                    _currentSong = Player.QueueStatic.Current;
                     if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
                     Queue();
                     break;
