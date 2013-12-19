@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using TITS.Library;
 using libZPlay;
+using System.Diagnostics;
 
 namespace TITS.Components.Engine
 {
     class ZPlayer : IPlayer
     {
-        private Song _currentSong;
-        private static ZPlay _engine = null;
-		private System.Threading.Thread _thread;
         private static string[] _supportedFileTypes = { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
+        private Song _currentSong;
+        private ZPlay _engine = null;
+        private TCallbackFunc EngineCallback;
 
         public event EventHandler<SongEventArgs> PlaybackStarted;
         public event EventHandler<SongEventArgs> PlaybackPaused;
@@ -50,7 +51,7 @@ namespace TITS.Components.Engine
             get
             {
                 TStreamTime time = default(TStreamTime);
-                ZPlayer.Engine.GetPosition(ref time);
+                Engine.GetPosition(ref time);
 
                 return time.ToTimeSpan();
             }
@@ -61,7 +62,7 @@ namespace TITS.Components.Engine
             return SupportedFileTypes.Contains(extension);
         }
 
-        internal static ZPlay Engine
+        internal ZPlay Engine
         {
             get
             {
@@ -79,24 +80,24 @@ namespace TITS.Components.Engine
         {
             if (song == null) throw new ArgumentNullException("song");
 
-			_currentSong = song;
+            _currentSong = song;
 
-			if (_thread == null)
-			{
-				_thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.PollingPlay));
-                _thread.Name = "Polling play";
-				_thread.Start();
-			}
+            Debug.WriteLine("Playing {0}", song);
+
+            if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
+                throw new EngineException(Engine.GetError());
+            if (!Engine.StartPlayback())
+                throw new EngineException(Engine.GetError()); 
+            
+            if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(_currentSong));
+
+            Queue();
         }
 
         public void Stop()
         {
             Engine.StopPlayback();
             Engine.Close();
-
-            if (_thread.IsAlive)
-                _thread.Join(100);
-            _thread = null;
 
             if (PlaybackStopped != null) PlaybackStopped(this, new EventArgs());
         }
@@ -117,78 +118,70 @@ namespace TITS.Components.Engine
 
         public void Next()
         {
-            if (_thread == null) throw new InvalidOperationException("Unable to skip to next song while playback has stopped.");
-
             lock (_engine)
             {
                 // Get the next song from the queue
                 _currentSong = Player.QueueStatic.current;
 
                 if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
-                    throw new EngineException(ZPlayer.Engine.GetError());
+                    throw new EngineException(Engine.GetError());
                 if (!Engine.StartPlayback())
-                    throw new EngineException(ZPlayer.Engine.GetError());
+                    throw new EngineException(Engine.GetError());
+
+                Queue();
             }
 
             if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
         }
 
-		private void PollingPlay()
-		{
-            lock (_engine)
-            {
-                if (!ZPlayer.Engine.OpenFile(_currentSong.FileName, libZPlay.TStreamFormat.sfAutodetect))
-                {
-                    string error = ZPlayer.Engine.GetError();
-                    throw new EngineException(error);
-                }
+        private void Queue()
+        {
+            Song next = Player.QueueStatic.Dequeue();
+            Queue(next);
+        }
 
-                if (!ZPlayer.Engine.StartPlayback())
-                {
-                    throw new EngineException(ZPlayer.Engine.GetError());
-                }
+        private void Queue(Song song)
+        {
+            Debug.WriteLine("Queueing {0}", song);
+            Engine.AddFile(song.FileName, TStreamFormat.sfAutodetect);
+        }
+
+        private int Callback(uint objptr, int user_data, TCallbackMessage msg, 
+            uint param1, uint param2)
+        {
+            switch (msg)
+            {
+                case TCallbackMessage.MsgNextSongAsync:
+                    // param1: index of playing song 
+                    // param2: number of songs remaining in gapless queue
+                    // return: not used 
+                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}", 
+                        _currentSong, Player.QueueStatic.current);
+
+                    _currentSong = Player.QueueStatic.current;
+                    if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
+                    Queue();
+                    break;
+                default:
+                    Debug.WriteLine("Unhandled engine callback: {0}", msg);
+                    break;
             }
 
-            if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(_currentSong));
+            return 0;
+        }
 
-			TStreamStatus status = default(TStreamStatus);
-
-            lock (_engine)
-            {
-                ZPlayer.Engine.GetStatus(ref status);
-            }
-
-			Library.Song nextSong = _currentSong;
-
-            while (status.fPlay || status.fPause)
-			{
-				// Enqueue for gapless playback
-				if (status.nSongsInQueue == 0)
-				{
-					_currentSong = nextSong;
-					nextSong = Player.QueueStatic.Dequeue();
-					ZPlayer.Engine.AddFile(nextSong.FileName, TStreamFormat.sfAutodetect);
-				}
-
-				System.Threading.Thread.Sleep(10);
-
-                lock (_engine)
-                {
-				    ZPlayer.Engine.GetStatus(ref status);
-                }
-			}
-
-            Console2.WriteLine(ConsoleColor.Yellow, "WARNING! POLLING THREAD HAS STOPPED!");
-            System.Diagnostics.Debug.WriteLine("Polling thread has stopped!", "Warning");
-		}
-
-        private static ZPlay InitializeEngine()
+        private ZPlay InitializeEngine()
         {
             ZPlay engine = new ZPlay();
             if (engine.SetSettings(TSettingID.sidAccurateLength, 1) == 0)
                 throw new EngineException(engine.GetError());
             if (engine.SetSettings(TSettingID.sidAccurateSeek, 1) == 0)
                 throw new EngineException(engine.GetError());
+
+            EngineCallback = new TCallbackFunc(Callback);
+            if (!engine.SetCallbackFunc(EngineCallback, TCallbackMessage.MsgNextSongAsync, 0))
+                throw new EngineException(engine.GetError());
+
             return engine;
         }
     }
