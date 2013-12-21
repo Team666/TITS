@@ -27,6 +27,11 @@ namespace TITS.Components.Engine
         /// Occurs when the engine has stopped playback.
         /// </summary>
         event EventHandler PlaybackStopped;
+        
+        /// <summary>
+        /// Occurs when the volume has changed.
+        /// </summary>
+        event EventHandler<VolumeEventArgs> VolumeChanged;
 
         /// <summary>
         /// Gets the current playback status.
@@ -37,6 +42,11 @@ namespace TITS.Components.Engine
         /// Gets the current playback position.
         /// </summary>
         TimeSpan Position { get; }
+
+        /// <summary>
+        /// Gets or sets the player volume as a value from 0 to 100.
+        /// </summary>
+        int Volume { get; set; }
 
         /// <summary>
         /// Determines whether an engine exists that supports the specified extension.

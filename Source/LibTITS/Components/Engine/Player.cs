@@ -52,6 +52,15 @@ namespace TITS.Components.Engine
         }
 
         /// <summary>
+        /// Occurs when the volume has changed.
+        /// </summary>
+        public event EventHandler<VolumeEventArgs> VolumeChanged
+        {
+            add { _zplayer.VolumeChanged += value; }
+            remove { _zplayer.VolumeChanged -= value; }
+        }
+
+        /// <summary>
         /// Occurs when a file could not be played.
         /// </summary>
         public event EventHandler<SongEventArgs> PlaybackError;
@@ -97,6 +106,27 @@ namespace TITS.Components.Engine
         public TimeSpan Position
         {
             get { return _zplayer.Position; }
+        }
+
+        /// <summary>
+        /// Gets or sets the player volume as a value from 0 to 100.
+        /// </summary>
+        public int Volume
+        {
+            get
+            {
+                if (Engine != null)
+                    return Engine.Volume;
+                Trace.WriteLine("No current engine available!");
+                return -1;
+            }
+            set
+            {
+                if (Engine != null)
+                    Engine.Volume = value;
+                else
+                    Trace.WriteLine("No current engine available!");
+            }
         }
 
         /// <summary>

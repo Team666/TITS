@@ -39,6 +39,11 @@ namespace TITS.Components.Engine
         public event EventHandler PlaybackStopped;
 
         /// <summary>
+        /// Occurs when the volume has changed.
+        /// </summary>
+        public event EventHandler<VolumeEventArgs> VolumeChanged;
+
+        /// <summary>
         /// Initializes a new instance of libZPlay.
         /// </summary>
         public ZPlayer()
@@ -92,6 +97,26 @@ namespace TITS.Components.Engine
                 Engine.GetPosition(ref time);
 
                 return time.ToTimeSpan();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the player volume as a value from 0 to 100.
+        /// </summary>
+        public int Volume
+        {
+            get
+            {
+                int left = 0, right = 0;
+                Engine.GetPlayerVolume(ref left, ref right);
+                return (left + right) / 2;
+            }
+            set
+            {
+                if (value > 100) value = 100;
+                if (value < 0) value = 0;
+                Engine.SetPlayerVolume(value, value);
+                if (VolumeChanged != null) VolumeChanged(this, new VolumeEventArgs(value));
             }
         }
 

@@ -42,7 +42,12 @@ namespace TITS
                 {
                     Console2.WriteLine(ConsoleColor.Yellow, "There was a problem while trying to play {0}", e.Song);
                 };
+                PleeTits.VolumeChanged += (sender, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Volume changed to " + e.Volume);
+                };
                 PleeTits.StartPlaying();
+                PleeTits.Volume = 50;
 
                 while (true)
                 {
@@ -67,9 +72,20 @@ namespace TITS
                             case ConsoleKey.MediaNext:
                                 PleeTits.Next();
                                 break;
+
                             case ConsoleKey.Spacebar:
                             case ConsoleKey.MediaPlay:
                                 PleeTits.Pause();
+                                break;
+
+                            case ConsoleKey.VolumeUp:
+                            case ConsoleKey.UpArrow:
+                                PleeTits.Volume += 5;
+                                break;
+
+                            case ConsoleKey.VolumeDown:
+                            case ConsoleKey.DownArrow:
+                                PleeTits.Volume -= 5;
                                 break;
                         }
                     }
