@@ -78,6 +78,7 @@ namespace TITS.Components.Engine
         public Player()
         {
             _zplayer = new ZPlayer();
+            Engine = _zplayer; // Default engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
 			Queue = new EngineQueue();

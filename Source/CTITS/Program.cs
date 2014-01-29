@@ -46,8 +46,9 @@ namespace TITS
                 {
                     System.Diagnostics.Debug.WriteLine("Volume changed to " + e.Volume);
                 };
-                PleeTits.StartPlaying();
+
                 PleeTits.Volume = 50;
+                PleeTits.StartPlaying();
 
                 while (true)
                 {
