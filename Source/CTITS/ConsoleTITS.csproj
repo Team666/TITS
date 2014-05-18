@@ -53,6 +53,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\faceTITS\faceTITS.csproj">
+      <Project>{f59c3e19-4c0f-4b18-9eb4-546bc6cc89b7}</Project>
+      <Name>faceTITS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LibTITS\LibTITS.csproj">
       <Project>{27f39f92-d6b9-4bf9-b4a1-ead646181b03}</Project>
       <Name>LibTITS</Name>
