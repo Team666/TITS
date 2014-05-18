@@ -107,16 +107,29 @@ namespace TITS.Components.Engine
         {
             get
             {
-                int left = 0, right = 0;
+                int left = 0;
+                int right = 0;
+
                 Engine.GetPlayerVolume(ref left, ref right);
+
                 return (left + right) / 2;
             }
             set
             {
-                if (value > 100) value = 100;
-                if (value < 0) value = 0;
+                if (value < 0)
+                {
+                    value = 0;
+                }
+                else if (value > 100)
+                {
+                    value = 100;
+                }
+
                 Engine.SetPlayerVolume(value, value);
-                if (VolumeChanged != null) VolumeChanged(this, new VolumeEventArgs(value));
+                if (VolumeChanged != null)
+                {
+                    VolumeChanged(this, new VolumeEventArgs(value));
+                }
             }
         }
 
@@ -135,7 +148,10 @@ namespace TITS.Components.Engine
         /// </summary>
         internal ZPlay Engine
         {
-            get { return _engine; }
+            get 
+            { 
+                return _engine; 
+            }
         }
 
         /// <summary>
@@ -144,7 +160,10 @@ namespace TITS.Components.Engine
         /// <param name="song">The song to be played.</param>
         public void Play(Song song)
         {
-            if (song == null) throw new ArgumentNullException("song");
+            if (song == null)
+            {
+                throw new ArgumentNullException("song");
+            }
 
             _currentSong = song;
 
@@ -153,9 +172,12 @@ namespace TITS.Components.Engine
             if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
                 throw new EngineException(Engine.GetError());
             if (!Engine.StartPlayback())
-                throw new EngineException(Engine.GetError()); 
-            
-            if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(_currentSong));
+                throw new EngineException(Engine.GetError());
+
+            if (PlaybackStarted != null)
+            {
+                PlaybackStarted(this, new SongEventArgs(_currentSong));
+            }
 
             Queue();
         }
@@ -211,6 +233,7 @@ namespace TITS.Components.Engine
 
         /// <summary>
         /// Queues the next song for playback.
+        /// TODO: REFACTOR
         /// </summary>
         public void Queue()
         {
@@ -228,8 +251,7 @@ namespace TITS.Components.Engine
             Engine.AddFile(song.FileName, TStreamFormat.sfAutodetect);
         }
 
-        private int Callback(uint objptr, int user_data, TCallbackMessage msg, 
-            uint param1, uint param2)
+        private int Callback(uint objptr, int user_data, TCallbackMessage msg, uint param1, uint param2)
         {
             switch (msg)
             {
@@ -250,6 +272,15 @@ namespace TITS.Components.Engine
             }
 
             return 0;
+        }
+
+
+        public Song CurrentSong
+        {
+            get
+            {
+                return _currentSong;
+            }
         }
     }
 }

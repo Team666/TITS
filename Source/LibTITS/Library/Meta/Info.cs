@@ -23,6 +23,14 @@ namespace TITS.Library.Meta
                 Track = track;
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return string.IsNullOrEmpty(Title);
+            }
+        }
+
         public override string ToString()
         {
             return string.Format("{0}. {1} - {2}", Track, Artist, Title);

@@ -48,6 +48,8 @@ namespace TITS.Components.Engine
         /// </summary>
         int Volume { get; set; }
 
+        Library.Song CurrentSong { get; }
+
         /// <summary>
         /// Determines whether an engine exists that supports the specified extension.
         /// </summary>

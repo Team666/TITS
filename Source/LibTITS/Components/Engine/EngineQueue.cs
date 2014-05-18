@@ -14,11 +14,11 @@ namespace TITS.Components.Engine
 
 		public new Library.Song Dequeue()
 		{
+            if (this.Count == 0 && QueueEmpty != null)
+                QueueEmpty(this, new EventArgs());
+
 			Library.Song song = base.Dequeue();
 			_current = song;
-
-			if (this.Count == 0 && QueueEmpty != null)
-				QueueEmpty(this, new EventArgs());
 
 			return song;
 		}

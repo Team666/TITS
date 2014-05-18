@@ -202,6 +202,27 @@ namespace TITS.Components.Engine
                 Trace.WriteLine(string.Format("No engine available for {0}!", next), "Warning");
         }
 
+        public Library.Song CurrentSong
+        {
+            get
+            {
+                if (Engine != null)
+                {
+                    return Engine.CurrentSong;
+                }
+
+                Trace.WriteLine("No current engine available!", "Warning");
+                return null;
+            }
+        }
+
+
+        [Obsolete("Probably not needed, CurrentSong of Playlist is the next song")]
+        public Library.Song PeekQueue()
+        {
+            return Queue.Current;
+        }
+
         /// <summary>
         /// Determines which engine can be used to play the specified song. If
         /// it is not supported by any engine, returns null.

@@ -19,7 +19,7 @@ namespace TITS
                 if (args != null && args.Length > 0)
                     PleeTits.Playlist = LoadMultiple(args);
                 else
-                    PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: false));
+                    PleeTits.Playlist = LoadMultiple(Interaction.BrowseFiles(isFolderPicker: true));
 
                 PleeTits.PlaybackStarted += (sender, e) =>
                 {
@@ -49,6 +49,12 @@ namespace TITS
 
                 PleeTits.Volume = 50;
                 PleeTits.StartPlaying();
+
+                if (PleeTits.Playlist.Count == 0)
+                {
+                    Console2.WriteLine(ConsoleColor.Yellow, "Nothing to do here");
+                    return;
+                }
 
                 while (true)
                 {
@@ -91,10 +97,10 @@ namespace TITS
                         }
                     }
 
-                    Interaction.PrintSong(PleeTits.Playlist.CurrentSong,
+                    Interaction.PrintSong(PleeTits.CurrentSong,
                         PleeTits.Position,
                         PleeTits.Status);
-                    System.Threading.Thread.Sleep(100);
+                    System.Threading.Thread.Sleep(10);
                 }
             }
             catch (Exception ex)

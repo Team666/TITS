@@ -126,8 +126,11 @@ namespace TITS.Components
         /// </summary>
         public void StartPlaying()
         {
-            EnqueueNextSong();
-            _player.Play(_player.Queue.Dequeue());
+            if (Playlist.Count > 0)
+            {
+                EnqueueNextSong();
+                _player.Play(_player.Queue.Dequeue());
+            }
         }
 
         /// <summary>
@@ -164,6 +167,14 @@ namespace TITS.Components
         {
             _player.Queue.Enqueue(Playlist.NextSong);
             Playlist.Index++;
+        }
+
+        public Library.Song CurrentSong
+        {
+            get
+            {
+                return _player.CurrentSong;
+            }
         }
     }
 
