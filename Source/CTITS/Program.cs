@@ -10,6 +10,7 @@ namespace TITS
         [STAThread]
         static void Main(string[] args)
         {
+            
             Console.Title = "TITS";
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
 
