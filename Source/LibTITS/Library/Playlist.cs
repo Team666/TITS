@@ -168,5 +168,20 @@ namespace TITS.Library
                     break;
             }
         }
+
+        public void Shuffle()
+        {
+            _original = this;
+
+            var random = new Random();
+            for (int n = Count - 1; n > 1; n--)
+            {
+                int k = random.Next(n);
+
+                Song value = this[k];
+                this[k] = this[n];
+                this[n] = value;
+            }
+        }
     }
 }
