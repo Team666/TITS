@@ -175,21 +175,14 @@ namespace TITS.Components.Engine
                 throw new ArgumentNullException("song");
             }
 
-            _currentSong = song;
-
             Debug.WriteLine("Playing {0}", song);
 
-            if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
-                throw new EngineException(Engine.GetError());
-            if (!Engine.StartPlayback())
-                throw new EngineException(Engine.GetError());
+            ChangeSong(song);
 
             if (PlaybackStarted != null)
             {
                 PlaybackStarted(this, new SongEventArgs(_currentSong));
             }
-
-            Queue();
         }
 
         /// <summary>
@@ -221,43 +214,32 @@ namespace TITS.Components.Engine
         }
 
         /// <summary>
-        /// Skips the current song and plays the next song from the queue.
+        /// Immediately changes the song, starts playback and queues the next song.
         /// </summary>
-        public void Next()
+        /// <param name="song">The song to change to.</param>
+        public void ChangeSong(Library.Song song)
         {
             lock (_engine)
             {
-                // Get the next song from the queue
-                _currentSong = _parent.PeekQueue();
+                _currentSong = song;
 
-                if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
+                if (!Engine.OpenFile(song.FileName, TStreamFormat.sfAutodetect))
+                {
                     throw new EngineException(Engine.GetError());
+                }
+
                 if (!Engine.StartPlayback())
+                {
                     throw new EngineException(Engine.GetError());
+                }
 
                 Queue();
             }
 
-            if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
-        }
-
-        public void Previous()
-        {
-            throw new NotImplementedException();
-
-            lock (_engine)
+            if (SongChanged != null)
             {
-                // _currentSong = _parent.History
-
-                if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
-                    throw new EngineException(Engine.GetError());
-                if (!Engine.StartPlayback())
-                    throw new EngineException(Engine.GetError());
-
-                Queue();
+                SongChanged(this, new SongEventArgs(song));
             }
-
-            if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
         }
 
         /// <summary>

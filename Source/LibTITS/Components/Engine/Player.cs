@@ -187,19 +187,7 @@ namespace TITS.Components.Engine
         public void Next()
         {
             Library.Song next = Queue.Current;
-            Engine = GetPlayer(next);
-
-            while (Engine == null)
-            {
-                // File can't be played, pick another
-                next = Queue.Dequeue();
-                Engine = GetPlayer(next);
-            }
-
-            if (Engine != null)
-                Engine.Next();
-            else
-                Trace.WriteLine(string.Format("No engine available for {0}!", next), "Warning");
+            ChangeSong(next);
         }
 
 		public void Previous()
@@ -207,19 +195,17 @@ namespace TITS.Components.Engine
 			throw new NotImplementedException();
 
 			Library.Song previous = null;
-			Engine = GetPlayer(previous);
-
-			while (Engine == null)
-			{
-				previous = null;
-				Engine = GetPlayer(previous);
-			}
-
-			if (Engine != null)
-				Engine.Previous();
-			else
-				Trace.WriteLine(string.Format("No engine available for {0}!", previous), "Warning");
+            ChangeSong(previous);
 		}
+
+        public void ChangeSong(Library.Song song)
+        {
+            Engine = GetPlayer(song);
+            if (Engine != null)
+                Engine.ChangeSong(song);
+            else
+                Trace.WriteLine(string.Format("No engine available for {0}!", song), "Warning");
+        }
 
         public Library.Song CurrentSong
         {
