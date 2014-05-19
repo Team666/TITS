@@ -186,8 +186,15 @@ namespace TITS.Components.Engine
         /// </summary>
         public void Next()
         {
-            Library.Song next = Queue.Dequeue();
-            ChangeSong(next);
+            if (Queue.Count > 0)
+            {
+                Library.Song next = Queue.Dequeue();
+                ChangeSong(next);
+            }
+            else
+            {
+                Debug.WriteLine("Queue is empty");
+            }
         }
 
 		public void Previous()

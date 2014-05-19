@@ -67,10 +67,7 @@ namespace TITS.Library
             }
             set
             {
-                if (base.Count > 0)
-                {
-                    index = value % base.Count;
-                }
+                index = value;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using TITS.Library;
@@ -154,10 +155,7 @@ namespace TITS.Components
         /// </summary>
         public void Next()
         {
-            if (Status == Engine.PlaybackStatus.Stopped)
-                StartPlaying();
-            else
-                _player.Next();
+            _player.Next();
         }
 
 		public void Previous()
@@ -170,8 +168,24 @@ namespace TITS.Components
         /// </summary>
         private void EnqueueNextSong()
         {
-            _player.Queue.Enqueue(Playlist.NextSong);
-            Playlist.Index++;
+            if (Playlist.Index + 1 >= Playlist.Count && RepeatMode == RepeatModes.None)
+            {
+                Trace.WriteLine("End of playlist");
+                return;
+            }
+
+            Song next = Playlist.NextSong;
+
+            if (RepeatMode == RepeatModes.Track && Playlist.CurrentSong != null)
+            {
+                next = Playlist.CurrentSong;
+            }
+            else
+            {
+                Playlist.Index++;
+            }
+
+            _player.Queue.Enqueue(next);
         }
 
         public Library.Song CurrentSong

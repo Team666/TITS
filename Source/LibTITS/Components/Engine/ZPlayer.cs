@@ -248,8 +248,15 @@ namespace TITS.Components.Engine
         /// </summary>
         public void Queue()
         {
-            Song next = _parent.Queue.Peek();
-            Queue(next);
+            if (_parent.Queue.Count > 0)
+            {
+                Song next = _parent.Queue.Peek();
+                Queue(next);
+            }
+            else
+            {
+                Debug.WriteLine("Queue is empty");
+            }
         }
 
         /// <summary>
