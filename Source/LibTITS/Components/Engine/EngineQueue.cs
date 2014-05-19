@@ -12,14 +12,22 @@ namespace TITS.Components.Engine
 	class EngineQueue : Queue<Library.Song>
 	{
         /// <summary>
-        /// Occurs when the queue is empty and there is nothing to dequeue.
+        /// Occurs when the queue is emptied.
         /// </summary>
 		public event EventHandler QueueEmpty;
 
         /// <summary>
-        /// Gets the song that was most recently removed from the queue.
+        /// Initializes a new instance of the engine queue.
         /// </summary>
-        public Library.Song Current { get; private set; }
+        public EngineQueue()
+        {
+            History = new Stack<Library.Song>();
+        }
+
+        /// <summary>
+        /// Gets a history of songs that have been dequeued.
+        /// </summary>
+        public Stack<Library.Song> History { get; private set; }
 
         /// <summary>
         /// Pulls the next song from the queue.
@@ -27,11 +35,11 @@ namespace TITS.Components.Engine
         /// <returns>The dequeued song.</returns>
 		public new Library.Song Dequeue()
 		{
+			Library.Song song = base.Dequeue();
+            History.Push(song);
+
             if (this.Count == 0 && QueueEmpty != null)
                 QueueEmpty(this, new EventArgs());
-
-			Library.Song song = base.Dequeue();
-			Current = song;
 
 			return song;
 		}

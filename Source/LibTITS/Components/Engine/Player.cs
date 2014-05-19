@@ -186,7 +186,7 @@ namespace TITS.Components.Engine
         /// </summary>
         public void Next()
         {
-            Library.Song next = Queue.Current;
+            Library.Song next = Queue.Dequeue();
             ChangeSong(next);
         }
 
@@ -219,11 +219,6 @@ namespace TITS.Components.Engine
                 Trace.WriteLine("No current engine available!", "Warning");
                 return null;
             }
-        }
-
-        public Library.Song PeekQueue()
-        {
-            return Queue.Current;
         }
 
         /// <summary>

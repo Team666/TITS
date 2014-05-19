@@ -248,7 +248,7 @@ namespace TITS.Components.Engine
         /// </summary>
         public void Queue()
         {
-            Song next = _parent.Queue.Dequeue();
+            Song next = _parent.Queue.Peek();
             Queue(next);
         }
 
@@ -270,11 +270,16 @@ namespace TITS.Components.Engine
                     // param1: index of playing song 
                     // param2: number of songs remaining in gapless queue
                     // return: not used 
-                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}",
-                        _currentSong, _parent.PeekQueue());
+                    var next = _parent.Queue.Dequeue();
 
-                    _currentSong = _parent.PeekQueue();
-                    if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
+                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}", _currentSong, next);
+
+                    _currentSong = next;
+                    if (SongChanged != null)
+                    {
+                        SongChanged(this, new SongEventArgs(next));
+                    }
+
                     Queue();
                     break;
                 default:

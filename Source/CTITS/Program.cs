@@ -14,8 +14,10 @@ namespace TITS
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
 
             TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
+#if !DEBUG
             try
             {
+#endif
                 if (args != null && args.Length > 0)
                     PleeTits.Playlist = LoadMultiple(args);
                 else
@@ -107,14 +109,13 @@ namespace TITS
                         PleeTits.Status);
                     System.Threading.Thread.Sleep(10);
                 }
+#if !DEBUG
             }
             catch (Exception ex)
             {
                 Console2.WriteLine(ConsoleColor.Red, ex.ToString());
-#if DEBUG
-                throw ex;
-#endif
             }
+#endif
         }
 
         static Library.Playlist LoadMultiple(IEnumerable<string> items)
