@@ -52,7 +52,7 @@ namespace TITS.Library
 
         public override string ToString()
         {
-            if (Metadata != null)
+            if (Metadata != null && !Metadata.IsEmpty)
                 return Metadata.ToString();
             return FileName;
         }

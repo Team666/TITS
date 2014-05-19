@@ -35,6 +35,7 @@ namespace TITS.Library
             {
                 if (index < 0)
                     return null;
+
                 return this[Index];
             }
         }
@@ -46,6 +47,11 @@ namespace TITS.Library
         {
             get
             {
+                if (base.Count == 0)
+                {
+                    return null;
+                }
+
                 return this[(Index + 1) % base.Count];
             }
         }
@@ -55,8 +61,17 @@ namespace TITS.Library
         /// </summary>
         public int Index
         {
-            get { return index; }
-            set { index = value % base.Count; }
+            get
+            { 
+                return index; 
+            }
+            set
+            {
+                if (base.Count > 0)
+                {
+                    index = value % base.Count;
+                }
+            }
         }
 
         /// <summary>

@@ -14,4 +14,14 @@ namespace TITS.Components.Engine
 
         public Library.Song Song { get; private set; }
     }
+
+    public class VolumeEventArgs : EventArgs
+    {
+        public VolumeEventArgs(int volume)
+        {
+            this.Volume = volume;
+        }
+
+        public int Volume { get; private set; }
+    }
 }

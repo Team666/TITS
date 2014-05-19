@@ -46,7 +46,7 @@
     <Compile Include="Components\Engine\IPlayer.cs" />
     <Compile Include="Components\Engine\PlaybackStatus.cs" />
     <Compile Include="Components\Engine\Player.cs" />
-    <Compile Include="Components\Engine\SongEventArgs.cs" />
+    <Compile Include="Components\Engine\EventArgs.cs" />
     <Compile Include="Components\NowPlaying.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Components\Engine\ZPlayer.cs" />
