@@ -65,24 +65,24 @@ namespace TITS.Components.Engine
         /// </summary>
         public event EventHandler<SongEventArgs> PlaybackError;
 
-		public static EngineQueue QueueStatic;
-
         /// <summary>
         /// Gets the queue containing songs to play.
         /// </summary>
         public EngineQueue Queue { get; private set; }
+
+		// public Stack<Library.Song> History { get; private set; }
 
         /// <summary>
         /// Initializes the engine players.
         /// </summary>
         public Player()
         {
-            _zplayer = new ZPlayer();
+            _zplayer = new ZPlayer(this);
             Engine = _zplayer; // Default engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
 			Queue = new EngineQueue();
-			QueueStatic = Queue;
+			// History = new Stack<Library.Song>();
         }
 
         /// <summary>
@@ -202,6 +202,25 @@ namespace TITS.Components.Engine
                 Trace.WriteLine(string.Format("No engine available for {0}!", next), "Warning");
         }
 
+		public void Previous()
+		{
+			throw new NotImplementedException();
+
+			Library.Song previous = null;
+			Engine = GetPlayer(previous);
+
+			while (Engine == null)
+			{
+				previous = null;
+				Engine = GetPlayer(previous);
+			}
+
+			if (Engine != null)
+				Engine.Previous();
+			else
+				Trace.WriteLine(string.Format("No engine available for {0}!", previous), "Warning");
+		}
+
         public Library.Song CurrentSong
         {
             get
@@ -216,8 +235,6 @@ namespace TITS.Components.Engine
             }
         }
 
-
-        [Obsolete("Probably not needed, CurrentSong of Playlist is the next song")]
         public Library.Song PeekQueue()
         {
             return Queue.Current;
@@ -239,5 +256,5 @@ namespace TITS.Components.Engine
             if (PlaybackError != null) PlaybackError(this, new SongEventArgs(song));
             return null;
         }
-    }
+	}
 }

@@ -14,6 +14,7 @@ namespace TITS.Components.Engine
     class ZPlayer : IPlayer
     {
         private static string[] _supportedFileTypes = { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
+        private Player _parent;
         private Song _currentSong;
         private ZPlay _engine = null;
         private TCallbackFunc EngineCallback;
@@ -46,8 +47,9 @@ namespace TITS.Components.Engine
         /// <summary>
         /// Initializes a new instance of libZPlay.
         /// </summary>
-        public ZPlayer()
+        public ZPlayer(Player parent)
         {
+            _parent = parent;
             _engine = new ZPlay();
             if (_engine.SetSettings(TSettingID.sidAccurateLength, 1) == 0)
                 throw new EngineException(_engine.GetError());
@@ -133,6 +135,25 @@ namespace TITS.Components.Engine
             }
         }
 
+        public Song CurrentSong
+        {
+            get
+            {
+                return _currentSong;
+            }
+        }
+
+        /// <summary>
+        /// Gets the internal ZPlay instance.
+        /// </summary>
+        internal ZPlay Engine
+        {
+            get
+            {
+                return _engine;
+            }
+        }
+
         /// <summary>
         /// Determines whether an engine exists that supports the specified extension.
         /// </summary>
@@ -141,17 +162,6 @@ namespace TITS.Components.Engine
         public bool SupportsFileType(string extension)
         {
             return SupportedFileTypes.Contains(extension);
-        }
-
-        /// <summary>
-        /// Gets the internal ZPlay instance.
-        /// </summary>
-        internal ZPlay Engine
-        {
-            get 
-            { 
-                return _engine; 
-            }
         }
 
         /// <summary>
@@ -218,7 +228,26 @@ namespace TITS.Components.Engine
             lock (_engine)
             {
                 // Get the next song from the queue
-                _currentSong = Player.QueueStatic.Current;
+                _currentSong = _parent.PeekQueue();
+
+                if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
+                    throw new EngineException(Engine.GetError());
+                if (!Engine.StartPlayback())
+                    throw new EngineException(Engine.GetError());
+
+                Queue();
+            }
+
+            if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
+        }
+
+        public void Previous()
+        {
+            throw new NotImplementedException();
+
+            lock (_engine)
+            {
+                // _currentSong = _parent.History
 
                 if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
                     throw new EngineException(Engine.GetError());
@@ -237,7 +266,7 @@ namespace TITS.Components.Engine
         /// </summary>
         public void Queue()
         {
-            Song next = Player.QueueStatic.Dequeue();
+            Song next = _parent.Queue.Dequeue();
             Queue(next);
         }
 
@@ -259,10 +288,10 @@ namespace TITS.Components.Engine
                     // param1: index of playing song 
                     // param2: number of songs remaining in gapless queue
                     // return: not used 
-                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}", 
-                        _currentSong, Player.QueueStatic.Current);
+                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}",
+                        _currentSong, _parent.PeekQueue());
 
-                    _currentSong = Player.QueueStatic.Current;
+                    _currentSong = _parent.PeekQueue();
                     if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
                     Queue();
                     break;
@@ -272,15 +301,6 @@ namespace TITS.Components.Engine
             }
 
             return 0;
-        }
-
-
-        public Song CurrentSong
-        {
-            get
-            {
-                return _currentSong;
-            }
         }
     }
 }

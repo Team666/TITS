@@ -160,6 +160,11 @@ namespace TITS.Components
                 _player.Next();
         }
 
+		public void Previous()
+		{
+			_player.Previous();
+		}
+
         /// <summary>
         /// Enqueues the next song for playback, and updates the playlist index.
         /// </summary>

@@ -80,6 +80,11 @@ namespace TITS
                                 PleeTits.Next();
                                 break;
 
+							case ConsoleKey.LeftArrow:
+							case ConsoleKey.MediaPrevious:
+								PleeTits.Previous();
+								break;
+
                             case ConsoleKey.Spacebar:
                             case ConsoleKey.MediaPlay:
                                 PleeTits.Pause();
