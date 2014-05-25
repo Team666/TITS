@@ -233,7 +233,7 @@ namespace TITS.Components.Engine
                     throw new EngineException(Engine.GetError());
                 }
 
-                Queue();
+                Enqueue();
             }
 
             if (SongChanged != null)
@@ -246,7 +246,7 @@ namespace TITS.Components.Engine
         /// Queues the next song for playback.
         /// TODO: REFACTOR
         /// </summary>
-        public void Queue()
+        public void Enqueue()
         {
             if (_parent.Queue.Count > 0)
             {
@@ -287,7 +287,7 @@ namespace TITS.Components.Engine
                         SongChanged(this, new SongEventArgs(next));
                     }
 
-                    Queue();
+                    Enqueue();
                     break;
                 default:
                     Debug.WriteLine("Unhandled engine callback: {0}", msg);

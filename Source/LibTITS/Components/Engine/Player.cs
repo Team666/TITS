@@ -70,19 +70,16 @@ namespace TITS.Components.Engine
         /// </summary>
         public EngineQueue Queue { get; private set; }
 
-		// public Stack<Library.Song> History { get; private set; }
-
         /// <summary>
         /// Initializes the engine players.
         /// </summary>
-        public Player()
+        public Player(Action<int> OffsetPlaylistIndex)
         {
             _zplayer = new ZPlayer(this);
             Engine = _zplayer; // Default engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
-			Queue = new EngineQueue();
-			// History = new Stack<Library.Song>();
+            Queue = new EngineQueue(OffsetPlaylistIndex);
         }
 
         /// <summary>
@@ -180,29 +177,16 @@ namespace TITS.Components.Engine
                 Trace.WriteLine("No current engine available!", "Warning");
         }
 
-        /// <summary>
-        /// Skips the current song and plays the next song. If the next song is
-        /// not supported by any engine, the song after that is played instead.
-        /// </summary>
+        [Obsolete("Needs access to a playlist, NowPlaying is handling Next")]
         public void Next()
         {
-            if (Queue.Count > 0)
-            {
-                Library.Song next = Queue.Dequeue();
-                ChangeSong(next);
-            }
-            else
-            {
-                Debug.WriteLine("Queue is empty");
-            }
+            throw new NotImplementedException();
         }
 
+        [Obsolete("Needs access to a playlist, NowPlaying is handling Previous")]
 		public void Previous()
 		{
 			throw new NotImplementedException();
-
-			Library.Song previous = null;
-            ChangeSong(previous);
 		}
 
         public void ChangeSong(Library.Song song)

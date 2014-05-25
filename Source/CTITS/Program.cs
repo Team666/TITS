@@ -50,7 +50,7 @@ namespace TITS
                 };
 
                 PleeTits.RepeatMode = Components.RepeatModes.All;
-                PleeTits.Playlist.Shuffle();
+                //PleeTits.Playlist.Shuffle();
                 PleeTits.Volume = 50;
                 PleeTits.StartPlaying();
 

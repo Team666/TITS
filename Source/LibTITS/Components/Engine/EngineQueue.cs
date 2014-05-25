@@ -6,11 +6,14 @@ using System.Text;
 namespace TITS.Components.Engine
 {
     /// <summary>
-    /// Represents a queue of upcoming songs, and holds a history of songs 
-    /// that have been played.
+    /// Represents the waiting queue for the next song to be played.
+    /// It is only used for the gapless playback of the next logical song.
     /// </summary>
 	class EngineQueue : Queue<Library.Song>
 	{
+        // Must only be called by this.Dequeue to notify the taking out of next song
+        private Action<int> OffsetPlaylistIndex;
+
         /// <summary>
         /// Occurs when the queue is emptied.
         /// </summary>
@@ -19,15 +22,18 @@ namespace TITS.Components.Engine
         /// <summary>
         /// Initializes a new instance of the engine queue.
         /// </summary>
-        public EngineQueue()
+        public EngineQueue(Action<int> OffsetPlaylistIndex) : base(1)
         {
-            History = new Stack<Library.Song>();
+            this.OffsetPlaylistIndex = OffsetPlaylistIndex;
         }
 
-        /// <summary>
-        /// Gets a history of songs that have been dequeued.
-        /// </summary>
-        public Stack<Library.Song> History { get; private set; }
+        ///// <summary>
+        ///// Gets a history of songs that have been dequeued.
+        ///// </summary>
+        //public Stack<Library.Song> Stack
+        //{
+        //    private set;
+        //}
 
         /// <summary>
         /// Pulls the next song from the queue.
@@ -36,12 +42,33 @@ namespace TITS.Components.Engine
 		public new Library.Song Dequeue()
 		{
 			Library.Song song = base.Dequeue();
-            History.Push(song);
+
+            // Engine has just taken the next song so we must notify the playlist of this
+            OffsetPlaylistIndex(1);
 
             if (this.Count == 0 && QueueEmpty != null)
+            {
                 QueueEmpty(this, new EventArgs());
+            }
 
 			return song;
 		}
+
+        public void Flush()
+        {
+            // Shouldn't contain more than one item
+            // but nonetheless it is prudent to not assume this
+            while (this.Count > 0)
+            {
+                base.Dequeue();
+            }
+
+            if (QueueEmpty != null)
+            {
+                QueueEmpty(this, new EventArgs());
+            }
+        }
+
+        //public void Replace(Library.Song )
 	}
 }
