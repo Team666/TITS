@@ -14,6 +14,7 @@ namespace TITS.Components.Engine
     class ZPlayer : IPlayer
     {
         private static string[] _supportedFileTypes = { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
+        private Player _parent;
         private Song _currentSong;
         private ZPlay _engine = null;
         private TCallbackFunc EngineCallback;
@@ -46,8 +47,9 @@ namespace TITS.Components.Engine
         /// <summary>
         /// Initializes a new instance of libZPlay.
         /// </summary>
-        public ZPlayer()
+        public ZPlayer(Player parent)
         {
+            _parent = parent;
             _engine = new ZPlay();
             if (_engine.SetSettings(TSettingID.sidAccurateLength, 1) == 0)
                 throw new EngineException(_engine.GetError());
@@ -133,6 +135,25 @@ namespace TITS.Components.Engine
             }
         }
 
+        public Song CurrentSong
+        {
+            get
+            {
+                return _currentSong;
+            }
+        }
+
+        /// <summary>
+        /// Gets the internal ZPlay instance.
+        /// </summary>
+        internal ZPlay Engine
+        {
+            get
+            {
+                return _engine;
+            }
+        }
+
         /// <summary>
         /// Determines whether an engine exists that supports the specified extension.
         /// </summary>
@@ -141,17 +162,6 @@ namespace TITS.Components.Engine
         public bool SupportsFileType(string extension)
         {
             return SupportedFileTypes.Contains(extension);
-        }
-
-        /// <summary>
-        /// Gets the internal ZPlay instance.
-        /// </summary>
-        internal ZPlay Engine
-        {
-            get 
-            { 
-                return _engine; 
-            }
         }
 
         /// <summary>
@@ -165,21 +175,14 @@ namespace TITS.Components.Engine
                 throw new ArgumentNullException("song");
             }
 
-            _currentSong = song;
-
             Debug.WriteLine("Playing {0}", song);
 
-            if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
-                throw new EngineException(Engine.GetError());
-            if (!Engine.StartPlayback())
-                throw new EngineException(Engine.GetError());
+            ChangeSong(song);
 
             if (PlaybackStarted != null)
             {
                 PlaybackStarted(this, new SongEventArgs(_currentSong));
             }
-
-            Queue();
         }
 
         /// <summary>
@@ -211,34 +214,49 @@ namespace TITS.Components.Engine
         }
 
         /// <summary>
-        /// Skips the current song and plays the next song from the queue.
+        /// Immediately changes the song, starts playback and queues the next song.
         /// </summary>
-        public void Next()
+        /// <param name="song">The song to change to.</param>
+        public void ChangeSong(Library.Song song)
         {
             lock (_engine)
             {
-                // Get the next song from the queue
-                _currentSong = Player.QueueStatic.Current;
+                _currentSong = song;
 
-                if (!Engine.OpenFile(_currentSong.FileName, TStreamFormat.sfAutodetect))
+                if (!Engine.OpenFile(song.FileName, TStreamFormat.sfAutodetect))
+                {
                     throw new EngineException(Engine.GetError());
+                }
+
                 if (!Engine.StartPlayback())
+                {
                     throw new EngineException(Engine.GetError());
+                }
 
-                Queue();
+                Enqueue();
             }
 
-            if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
+            if (SongChanged != null)
+            {
+                SongChanged(this, new SongEventArgs(song));
+            }
         }
 
         /// <summary>
         /// Queues the next song for playback.
         /// TODO: REFACTOR
         /// </summary>
-        public void Queue()
+        public void Enqueue()
         {
-            Song next = Player.QueueStatic.Dequeue();
-            Queue(next);
+            if (_parent.Queue.Count > 0)
+            {
+                Song next = _parent.Queue.Peek();
+                Queue(next);
+            }
+            else
+            {
+                Debug.WriteLine("Queue is empty");
+            }
         }
 
         /// <summary>
@@ -259,12 +277,17 @@ namespace TITS.Components.Engine
                     // param1: index of playing song 
                     // param2: number of songs remaining in gapless queue
                     // return: not used 
-                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}", 
-                        _currentSong, Player.QueueStatic.Current);
+                    var next = _parent.Queue.Dequeue();
 
-                    _currentSong = Player.QueueStatic.Current;
-                    if (SongChanged != null) SongChanged(this, new SongEventArgs(_currentSong));
-                    Queue();
+                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}", _currentSong, next);
+
+                    _currentSong = next;
+                    if (SongChanged != null)
+                    {
+                        SongChanged(this, new SongEventArgs(next));
+                    }
+
+                    Enqueue();
                     break;
                 default:
                     Debug.WriteLine("Unhandled engine callback: {0}", msg);
@@ -272,15 +295,6 @@ namespace TITS.Components.Engine
             }
 
             return 0;
-        }
-
-
-        public Song CurrentSong
-        {
-            get
-            {
-                return _currentSong;
-            }
         }
     }
 }

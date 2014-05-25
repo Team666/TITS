@@ -5,22 +5,70 @@ using System.Text;
 
 namespace TITS.Components.Engine
 {
+    /// <summary>
+    /// Represents the waiting queue for the next song to be played.
+    /// It is only used for the gapless playback of the next logical song.
+    /// </summary>
 	class EngineQueue : Queue<Library.Song>
 	{
+        // Must only be called by this.Dequeue to notify the taking out of next song
+        private Action<int> OffsetPlaylistIndex;
+
+        /// <summary>
+        /// Occurs when the queue is emptied.
+        /// </summary>
 		public event EventHandler QueueEmpty;
 
-		public Library.Song Current { get { return _current; } }
-		private Library.Song _current;
+        /// <summary>
+        /// Initializes a new instance of the engine queue.
+        /// </summary>
+        public EngineQueue(Action<int> OffsetPlaylistIndex) : base(1)
+        {
+            this.OffsetPlaylistIndex = OffsetPlaylistIndex;
+        }
 
+        ///// <summary>
+        ///// Gets a history of songs that have been dequeued.
+        ///// </summary>
+        //public Stack<Library.Song> Stack
+        //{
+        //    private set;
+        //}
+
+        /// <summary>
+        /// Pulls the next song from the queue.
+        /// </summary>
+        /// <returns>The dequeued song.</returns>
 		public new Library.Song Dequeue()
 		{
-            if (this.Count == 0 && QueueEmpty != null)
-                QueueEmpty(this, new EventArgs());
-
 			Library.Song song = base.Dequeue();
-			_current = song;
+
+            // Engine has just taken the next song so we must notify the playlist of this
+            OffsetPlaylistIndex(1);
+
+            if (this.Count == 0 && QueueEmpty != null)
+            {
+                QueueEmpty(this, new EventArgs());
+            }
 
 			return song;
 		}
+
+        public void Flush()
+        {
+            // Shouldn't contain more than one item
+            // but nonetheless it is prudent to not assume this
+            while (this.Count > 0)
+            {
+                base.Dequeue();
+            }
+
+            if (QueueEmpty != null)
+            {
+                QueueEmpty(this, new EventArgs());
+            }
+        }
+
+        //public void Replace(Library.Song )
 	}
 }

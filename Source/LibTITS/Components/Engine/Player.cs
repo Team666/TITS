@@ -65,8 +65,6 @@ namespace TITS.Components.Engine
         /// </summary>
         public event EventHandler<SongEventArgs> PlaybackError;
 
-		public static EngineQueue QueueStatic;
-
         /// <summary>
         /// Gets the queue containing songs to play.
         /// </summary>
@@ -75,14 +73,13 @@ namespace TITS.Components.Engine
         /// <summary>
         /// Initializes the engine players.
         /// </summary>
-        public Player()
+        public Player(Action<int> OffsetPlaylistIndex)
         {
-            _zplayer = new ZPlayer();
+            _zplayer = new ZPlayer(this);
             Engine = _zplayer; // Default engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
-			Queue = new EngineQueue();
-			QueueStatic = Queue;
+            Queue = new EngineQueue(OffsetPlaylistIndex);
         }
 
         /// <summary>
@@ -180,26 +177,25 @@ namespace TITS.Components.Engine
                 Trace.WriteLine("No current engine available!", "Warning");
         }
 
-        /// <summary>
-        /// Skips the current song and plays the next song. If the next song is
-        /// not supported by any engine, the song after that is played instead.
-        /// </summary>
+        [Obsolete("Needs access to a playlist, NowPlaying is handling Next")]
         public void Next()
         {
-            Library.Song next = Queue.Current;
-            Engine = GetPlayer(next);
+            throw new NotImplementedException();
+        }
 
-            while (Engine == null)
-            {
-                // File can't be played, pick another
-                next = Queue.Dequeue();
-                Engine = GetPlayer(next);
-            }
+        [Obsolete("Needs access to a playlist, NowPlaying is handling Previous")]
+		public void Previous()
+		{
+			throw new NotImplementedException();
+		}
 
+        public void ChangeSong(Library.Song song)
+        {
+            Engine = GetPlayer(song);
             if (Engine != null)
-                Engine.Next();
+                Engine.ChangeSong(song);
             else
-                Trace.WriteLine(string.Format("No engine available for {0}!", next), "Warning");
+                Trace.WriteLine(string.Format("No engine available for {0}!", song), "Warning");
         }
 
         public Library.Song CurrentSong
@@ -214,13 +210,6 @@ namespace TITS.Components.Engine
                 Trace.WriteLine("No current engine available!", "Warning");
                 return null;
             }
-        }
-
-
-        [Obsolete("Probably not needed, CurrentSong of Playlist is the next song")]
-        public Library.Song PeekQueue()
-        {
-            return Queue.Current;
         }
 
         /// <summary>
@@ -239,5 +228,5 @@ namespace TITS.Components.Engine
             if (PlaybackError != null) PlaybackError(this, new SongEventArgs(song));
             return null;
         }
-    }
+	}
 }
