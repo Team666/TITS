@@ -70,7 +70,7 @@ namespace TITS.Components
         /// </summary>
         public NowPlaying()
         {
-            _player = new Engine.Player(this.OffsetPlaylist);
+            _player = new Engine.Player(this.NotifyPlaylistOfDequeue);
             _player.Queue.QueueEmpty += (sender, e) => { this.EnqueueNextSong(); };
         }
 
@@ -93,12 +93,15 @@ namespace TITS.Components
         }
 
         /// <summary>
-        /// Offsets the current playlist's index by the specified value by calling its OffsetIndexBy method
+        /// Notifies playlist of automatic song change (next song) by calling its OffsetIndexBy method
         /// this is needed for EngineQueue once it proceeds to play the queued song.
         /// </summary>
-        private void OffsetPlaylist(int offset)
+        private void NotifyPlaylistOfDequeue()
         {
-            Playlist.OffsetIndexBy(offset);
+            if (RepeatMode != RepeatModes.Track)
+            {
+                _playlist.OffsetIndexBy(+1);
+            }
         }
 
         /// <summary>

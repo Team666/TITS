@@ -12,7 +12,7 @@ namespace TITS.Components.Engine
 	class EngineQueue : Queue<Library.Song>
 	{
         // Must only be called by this.Dequeue to notify the taking out of next song
-        private Action<int> OffsetPlaylistIndex;
+        private Action NotifyPlaylistOfDequeueAction;
 
         /// <summary>
         /// Occurs when the queue is emptied.
@@ -22,18 +22,10 @@ namespace TITS.Components.Engine
         /// <summary>
         /// Initializes a new instance of the engine queue.
         /// </summary>
-        public EngineQueue(Action<int> OffsetPlaylistIndex) : base(1)
+        public EngineQueue(Action NotifyPlaylistOfDequeueAction) : base(1)
         {
-            this.OffsetPlaylistIndex = OffsetPlaylistIndex;
+            this.NotifyPlaylistOfDequeueAction = NotifyPlaylistOfDequeueAction;
         }
-
-        ///// <summary>
-        ///// Gets a history of songs that have been dequeued.
-        ///// </summary>
-        //public Stack<Library.Song> Stack
-        //{
-        //    private set;
-        //}
 
         /// <summary>
         /// Pulls the next song from the queue.
@@ -44,7 +36,7 @@ namespace TITS.Components.Engine
 			Library.Song song = base.Dequeue();
 
             // Engine has just taken the next song so we must notify the playlist of this
-            OffsetPlaylistIndex(1);
+            NotifyPlaylistOfDequeueAction();
 
             if (this.Count == 0 && QueueEmpty != null)
             {
@@ -68,7 +60,5 @@ namespace TITS.Components.Engine
                 QueueEmpty(this, new EventArgs());
             }
         }
-
-        //public void Replace(Library.Song )
 	}
 }
