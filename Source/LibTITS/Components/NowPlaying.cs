@@ -118,6 +118,29 @@ namespace TITS.Components
             {
                 _repeatMode = value;
                 Playlist.RepeatMode = value;
+
+                if (_repeatMode == RepeatModes.Track)
+                {
+                    _player.Queue.Flush();
+                }
+            }
+        }
+
+        public void CycleRepeatMode()
+        {
+            switch (_repeatMode)
+            {
+                case RepeatModes.None:
+                    RepeatMode = RepeatModes.All;
+                    break;
+
+                case RepeatModes.All:
+                    RepeatMode = RepeatModes.Track;
+                    break;
+
+                case RepeatModes.Track:
+                    RepeatMode = RepeatModes.None;
+                    break;
             }
         }
 
@@ -190,9 +213,9 @@ namespace TITS.Components
         /// <summary>
         /// Plays the next song.
         /// </summary>
-        public void Next()
+        public void Next(bool forcedNext = true)
         {
-            var song = Playlist.NextSong(peek: false);
+            var song = Playlist.NextSong(peek: false, forcedNext: forcedNext);
 
             if (song != null)
             {
