@@ -248,7 +248,7 @@ namespace TITS.Components
 
             Song next;
 
-            if (RepeatMode == RepeatModes.Track && Playlist.CurrentSong != null)
+            if (RepeatMode == RepeatModes.Track)
             {
                 next = Playlist.CurrentSong;
             }
@@ -257,7 +257,14 @@ namespace TITS.Components
                 next = Playlist.NextSong(peek: true);
             }
 
-            _player.Queue.Enqueue(next);
+            if (next != null)
+            {
+                _player.Queue.Enqueue(next);
+            }
+            else
+            {
+                return;
+            }
         }
 
         public Library.Song CurrentSong
