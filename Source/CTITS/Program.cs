@@ -104,13 +104,19 @@ namespace TITS
                             case ConsoleKey.DownArrow:
                                 PleeTits.Volume -= 5;
                                 break;
+
+                            case ConsoleKey.M:
+                                PleeTits.CycleRepeatMode();
+                                break;
                         }
                     }
 
                     Interaction.PrintSong(PleeTits.CurrentSong,
                         PleeTits.Position,
-                        PleeTits.Status);
-                    System.Threading.Thread.Sleep(10);
+                        PleeTits.Status,
+                        PleeTits.RepeatMode);
+
+                    System.Threading.Thread.Sleep(1);
                 }
 #if !DEBUG
             }

@@ -73,13 +73,13 @@ namespace TITS.Components.Engine
         /// <summary>
         /// Initializes the engine players.
         /// </summary>
-        public Player(Action<int> OffsetPlaylistIndex)
+        public Player(Action NotifyPlaylistOfDequeueAction)
         {
             _zplayer = new ZPlayer(this);
             Engine = _zplayer; // Default engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
-            Queue = new EngineQueue(OffsetPlaylistIndex);
+            Queue = new EngineQueue(NotifyPlaylistOfDequeueAction);
         }
 
         /// <summary>

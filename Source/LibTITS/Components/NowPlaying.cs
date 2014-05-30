@@ -70,7 +70,7 @@ namespace TITS.Components
         /// </summary>
         public NowPlaying()
         {
-            _player = new Engine.Player(this.OffsetPlaylist);
+            _player = new Engine.Player(this.NotifyPlaylistOfDequeue);
             _player.Queue.QueueEmpty += (sender, e) => { this.EnqueueNextSong(); };
         }
 
@@ -93,12 +93,15 @@ namespace TITS.Components
         }
 
         /// <summary>
-        /// Offsets the current playlist's index by the specified value by calling its OffsetIndexBy method
+        /// Notifies playlist of automatic song change (next song) by calling its OffsetIndexBy method
         /// this is needed for EngineQueue once it proceeds to play the queued song.
         /// </summary>
-        private void OffsetPlaylist(int offset)
+        private void NotifyPlaylistOfDequeue()
         {
-            Playlist.OffsetIndexBy(offset);
+            if (RepeatMode != RepeatModes.Track)
+            {
+                _playlist.OffsetIndexBy(+1);
+            }
         }
 
         /// <summary>
@@ -115,6 +118,29 @@ namespace TITS.Components
             {
                 _repeatMode = value;
                 Playlist.RepeatMode = value;
+
+                if (_repeatMode == RepeatModes.Track)
+                {
+                    _player.Queue.Flush();
+                }
+            }
+        }
+
+        public void CycleRepeatMode()
+        {
+            switch (_repeatMode)
+            {
+                case RepeatModes.None:
+                    RepeatMode = RepeatModes.All;
+                    break;
+
+                case RepeatModes.All:
+                    RepeatMode = RepeatModes.Track;
+                    break;
+
+                case RepeatModes.Track:
+                    RepeatMode = RepeatModes.None;
+                    break;
             }
         }
 
@@ -187,9 +213,9 @@ namespace TITS.Components
         /// <summary>
         /// Plays the next song.
         /// </summary>
-        public void Next()
+        public void Next(bool forcedNext = true)
         {
-            var song = Playlist.NextSong(peek: false);
+            var song = Playlist.NextSong(peek: false, forcedNext: forcedNext);
 
             if (song != null)
             {
@@ -222,7 +248,7 @@ namespace TITS.Components
 
             Song next;
 
-            if (RepeatMode == RepeatModes.Track && Playlist.CurrentSong != null)
+            if (RepeatMode == RepeatModes.Track)
             {
                 next = Playlist.CurrentSong;
             }
@@ -231,7 +257,14 @@ namespace TITS.Components
                 next = Playlist.NextSong(peek: true);
             }
 
-            _player.Queue.Enqueue(next);
+            if (next != null)
+            {
+                _player.Queue.Enqueue(next);
+            }
+            else
+            {
+                return;
+            }
         }
 
         public Library.Song CurrentSong

@@ -58,14 +58,21 @@ namespace TITS.Library
                 return null;
             }
 
-            int NextSongIndex = CalculateIndex(_index + 1);
+            int nextSongIndex = CalculateIndex(_index + 1);
+
+            // Next song is current song, playlist is done.
+            // Note that playback can stop here only if no repeat mode is on
+            if (nextSongIndex == _index && RepeatMode == RepeatModes.None)
+            {
+                return null;
+            }
 
             if(!peek)
             {
-                _index = NextSongIndex;
+                _index = nextSongIndex;
             }
 
-            return this[NextSongIndex];
+            return this[nextSongIndex];
         }
 
         /// <summary>
