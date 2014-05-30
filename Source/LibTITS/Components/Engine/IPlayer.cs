@@ -76,6 +76,6 @@ namespace TITS.Components.Engine
         /// <summary>
         /// Skips the current song and plays the next song.
         /// </summary>
-        void Next();
+        void ChangeSong(Library.Song song);
     }
 }

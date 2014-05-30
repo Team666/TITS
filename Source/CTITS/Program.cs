@@ -14,8 +14,10 @@ namespace TITS
             Console2.WriteLine(ConsoleColor.White, "TITS Console");
 
             TITS.Components.NowPlaying PleeTits = new Components.NowPlaying();
+#if !DEBUG
             try
             {
+#endif
                 if (args != null && args.Length > 0)
                     PleeTits.Playlist = LoadMultiple(args);
                 else
@@ -47,6 +49,8 @@ namespace TITS
                     System.Diagnostics.Debug.WriteLine("Volume changed to " + e.Volume);
                 };
 
+                PleeTits.RepeatMode = Components.RepeatModes.All;
+                //PleeTits.Playlist.Shuffle();
                 PleeTits.Volume = 50;
                 PleeTits.StartPlaying();
 
@@ -80,6 +84,11 @@ namespace TITS
                                 PleeTits.Next();
                                 break;
 
+							case ConsoleKey.LeftArrow:
+							case ConsoleKey.MediaPrevious:
+								PleeTits.Previous();
+								break;
+
                             case ConsoleKey.Spacebar:
                             case ConsoleKey.MediaPlay:
                                 PleeTits.Pause();
@@ -94,22 +103,27 @@ namespace TITS
                             case ConsoleKey.DownArrow:
                                 PleeTits.Volume -= 5;
                                 break;
+
+                            case ConsoleKey.M:
+                                PleeTits.CycleRepeatMode();
+                                break;
                         }
                     }
 
                     Interaction.PrintSong(PleeTits.CurrentSong,
                         PleeTits.Position,
-                        PleeTits.Status);
-                    System.Threading.Thread.Sleep(10);
+                        PleeTits.Status,
+                        PleeTits.RepeatMode);
+
+                    System.Threading.Thread.Sleep(1);
                 }
+#if !DEBUG
             }
             catch (Exception ex)
             {
                 Console2.WriteLine(ConsoleColor.Red, ex.ToString());
-#if DEBUG
-                throw ex;
-#endif
             }
+#endif
         }
 
         static Library.Playlist LoadMultiple(IEnumerable<string> items)

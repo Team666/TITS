@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TITS.Components;
 
 namespace TITS.Library
 {
     public class Playlist : List<Song>
     {
         private Playlist _original;
-        private int index = -1;
+        private int _index = -1;
 
         public static readonly Playlist Empty = new Playlist();
+        public RepeatModes RepeatMode { get; set; }
 
-        public Playlist()
-            : base()
+        public Playlist() : base()
         {
         }
 
@@ -33,7 +34,7 @@ namespace TITS.Library
         {
             get
             {
-                if (index < 0)
+                if (_index < 0)
                     return null;
 
                 return this[Index];
@@ -43,16 +44,71 @@ namespace TITS.Library
         /// <summary>
         /// Gets the next song in the playlist.
         /// </summary>
-        public Song NextSong
+        /// <param name="forcedNext">indicates if playlist should give the next song regardless of RepeatMode: Single
+        /// this is useful for when the user explicitly requested a next song</param>
+        public Song NextSong(bool peek = true, bool forcedNext = false)
         {
-            get
+            if (RepeatMode == RepeatModes.Track && !forcedNext)
             {
-                if (base.Count == 0)
+                return this[_index];   
+            }
+
+            if (base.Count == 0)
+            {
+                return null;
+            }
+
+            int nextSongIndex = CalculateIndex(_index + 1);
+
+            // Next song is current song, playlist is done.
+            // Note that playback can stop here only if no repeat mode is on
+            if (nextSongIndex == _index && RepeatMode == RepeatModes.None)
+            {
+                return null;
+            }
+
+            if(!peek)
+            {
+                _index = nextSongIndex;
+            }
+
+            return this[nextSongIndex];
+        }
+
+        /// <summary>
+        /// Sets index to the song before current song and returns the new indexed song.
+        /// </summary>
+        public Song PreviousSong(bool peek = true)
+        {
+            if (base.Count == 0)
+            {
+                return null;
+            }
+   
+            // Nothing has been played yet or only the first song is playing
+            // Note: This might change, right now it is just implemented as the "normal" case below
+            if (_index < 1)
+            {
+                // If repeat: false, will return 0 but that's fine too...
+                var newIndex = CalculateIndex(_index - 1);
+
+                if (!peek)
                 {
-                    return null;
+                    _index = newIndex;
                 }
 
-                return this[(Index + 1) % base.Count];
+                return this[newIndex];
+            }
+            else
+            {
+                var newIndex = CalculateIndex(_index - 1);
+
+                if (!peek)
+                {
+                    _index = newIndex;
+                }
+
+                return this[_index];
             }
         }
 
@@ -63,15 +119,64 @@ namespace TITS.Library
         {
             get
             { 
-                return index; 
+                return _index; 
             }
-            set
+        }
+
+        public void SetIndex(int newIndex)
+        {
+            _index = CalculateIndex(newIndex);
+        }
+
+        /// <summary>
+        /// Useful to calculate the index from given value.
+        /// Will either wraparound or give last possible index.
+        /// </summary>
+        public int CalculateIndex(int value)
+        {
+            int count = base.Count;
+            bool repeatAll = RepeatMode == RepeatModes.All;
+
+            if (repeatAll)
             {
-                if (base.Count > 0)
+                if (value < 0)
+                {   
+                    while (value < 0)
+                    {
+                        value += count;
+                    }
+
+                    return value;
+                }
+                else if (value >= count)
                 {
-                    index = value % base.Count;
+                    return value % count;
+                }
+                else
+                {
+                    return value;
                 }
             }
+            else
+            {
+                if (value < 0)
+                {
+                    return 0;
+                }
+                else if (value >= count)
+                {
+                    return count - 1;
+                }
+                else
+                {
+                    return value;
+                }                
+            }
+        }
+
+        public void OffsetIndexBy(int offset)
+        {
+            _index = CalculateIndex(_index + offset);
         }
 
         /// <summary>
@@ -169,6 +274,21 @@ namespace TITS.Library
                 default:
                     System.Diagnostics.Trace.WriteLine("Unsupported playlist format: " + path, "Debug");
                     break;
+            }
+        }
+
+        public void Shuffle()
+        {
+            _original = this;
+
+            var random = new Random();
+            for (int n = Count - 1; n > 1; n--)
+            {
+                int k = random.Next(n);
+
+                Song value = this[k];
+                this[k] = this[n];
+                this[n] = value;
             }
         }
     }

@@ -22,15 +22,15 @@ namespace TITS
             return new string[0];
         }
 
-        public static void PrintSong(Library.Song song, TimeSpan position, Components.Engine.PlaybackStatus status)
+        public static void PrintSong(Library.Song song, TimeSpan position, Components.Engine.PlaybackStatus status, Components.RepeatModes repeatMode)
         {
             switch (status)
             {
                 case TITS.Components.Engine.PlaybackStatus.Stopped:
-                    Console2.Write(ConsoleColor.DarkGreen, "-");
+                    Console2.Write(ConsoleColor.DarkGreen, "s ");
                     break;
                 case Components.Engine.PlaybackStatus.Paused:
-                    Console2.Write(ConsoleColor.DarkGreen, "! ");
+                    Console2.Write(ConsoleColor.DarkGreen, "p ");
                     break;
                 case TITS.Components.Engine.PlaybackStatus.Playing:
                     Console2.Write(ConsoleColor.DarkGreen, "> ");
@@ -38,7 +38,10 @@ namespace TITS
             }
 
             Console2.Write(ConsoleColor.DarkGreen, "{0} ", song);
-            Console2.Write(ConsoleColor.Green, "{0:m\\:ss}\r", position);
+            Console2.Write(ConsoleColor.Green, "{0:m\\:ss}", position);
+
+            string mode = repeatMode.ToString();
+            Console2.Write(ConsoleColor.Gray, " Repeat: {0}         \r", mode);
         }
     }
 }
