@@ -17,11 +17,33 @@ namespace faceTITS
 	/// </summary>
 	public partial class View1 : UserControl
 	{
+        private View1Model _viewModel;
 		public View1()
 		{
 			this.InitializeComponent();
-			
+            this._viewModel = new View1Model();
 			// Insert code required on object creation below this point.
 		}
+
+        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            View1Model.Play();
+        }
+
+        private void NextsongButton_Click(object sender, RoutedEventArgs e)
+        {
+            View1Model.NextSong();
+        }
+
+        private void PreviousSongButton_Click(object sender, RoutedEventArgs e)
+        {
+            View1Model.PreviousSong();
+        }
+
+        private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
+        {
+            App.Player.Playlist = new TITS.Library.Playlist();
+            App.Player.Playlist.AddFromDirectory(@"C:\Users\Coolicer\Music\Daft Punk\Tron Legacy Original Motion Picture Soundtrack");
+        }
 	}
 }
