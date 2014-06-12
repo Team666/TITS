@@ -17,11 +17,11 @@ namespace faceTITS
 	/// </summary>
 	public partial class View1 : UserControl
 	{
-        private View1Model _viewModel;
+        //private View1Model _viewModel;
 		public View1()
 		{
 			this.InitializeComponent();
-            this._viewModel = new View1Model();
+            //this._viewModel = new View1Model();
 			// Insert code required on object creation below this point.
 		}
 
