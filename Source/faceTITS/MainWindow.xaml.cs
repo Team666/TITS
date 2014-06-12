@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace faceTITS
 {
@@ -30,6 +31,9 @@ namespace faceTITS
             App.Player.Playlist = new TITS.Library.Playlist();
             App.Player.Playlist.AddFromDirectory(@"F:\Steam\steamapps\common\FTL Faster Than Light\FTL AE Soundtrack");
             App.Player.StartPlaying();
+
+            this.MinWidth  = this.Width;
+            this.MinHeight = this.Height;
         }
     }
 }

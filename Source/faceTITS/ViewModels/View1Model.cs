@@ -8,21 +8,26 @@ namespace faceTITS
 {
     public class View1Model : INotifyPropertyChanged
 	{
+        private TITS.Components.NowPlaying _player;
         public View1Model()
         {
-            App.Player.SongChanged += (sender, e) =>
+            if (!DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
+            {
+            _player = App.Player;
+
+            _player.SongChanged += (sender, e) =>
                 {
                     NotifyPropertyChanged("CurrentArtist");
                     NotifyPropertyChanged("CurrentSongtitle");
                 };
-
+            }
         }
 
         public string CurrentArtist
         {
             get
             {
-                if (App.Player.CurrentSong != null)
+                if (_player.CurrentSong != null)
                     return App.Player.CurrentSong.Metadata.Artist.Name;
                 else
                     return "";
@@ -33,33 +38,33 @@ namespace faceTITS
         {
             get
             {
-                if (App.Player.CurrentSong != null)
+                if (_player.CurrentSong != null)
                     return App.Player.CurrentSong.Metadata.Title;
                 else
                     return "";
             }
         }
 
-        public static void NextSong()
+        public void NextSong()
         {
-            App.Player.Next(forcedNext: true);
+            _player.Next(forcedNext: true);
         }
 
-        public static void Play()
+        public void Play()
         {
-            if (App.Player.Status == TITS.Components.Engine.PlaybackStatus.Stopped)
+            if (_player.Status == TITS.Components.Engine.PlaybackStatus.Stopped)
             {
-                App.Player.StartPlaying();
+                _player.StartPlaying();
             }
             else
             {
-                App.Player.Pause();
+                _player.Pause();
             }
         }
 
-        public static void PreviousSong()
+        public void PreviousSong()
         {
-            App.Player.Previous();
+            _player.Previous();
         }
 
 		#region INotifyPropertyChanged
