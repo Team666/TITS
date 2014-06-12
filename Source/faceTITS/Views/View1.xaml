@@ -7,9 +7,16 @@
 	xmlns:local="clr-namespace:faceTITS"
 	x:Class="faceTITS.View1"
 	d:DesignWidth="640" d:DesignHeight="480">
-	<UserControl.Resources>
-		<local:View1Model x:Key="View1ModelDataSource" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <local:View1Model x:Key="View1ModelDataSource" />
+    </UserControl.Resources>
 
-	<Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource View1ModelDataSource}}"/>
+    <Grid x:Name="LayoutRoot" Loaded="LayoutRoot_Loaded" DataContext="{StaticResource ResourceKey=View1ModelDataSource}">
+        <Button x:Name="PlayButton" Content="Play" HorizontalAlignment="Left" Margin="277,221,0,0" VerticalAlignment="Top" Width="75" Click="PlayButton_Click"/>
+        <Button x:Name="NextSongButton" Content="Next" HorizontalAlignment="Left" Margin="357,221,0,0" VerticalAlignment="Top" Width="75" Click="NextsongButton_Click"/>
+        <Button x:Name="PreviousSongButton" Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="197,221,0,0" Click="PreviousSongButton_Click"/>
+        <Label  x:Name="SongArtist" Content="{Binding Path=CurrentArtist,    UpdateSourceTrigger=PropertyChanged}"      HorizontalAlignment="Left" Margin="197,159,0,0" VerticalAlignment="Top"/>
+        <Label  x:Name="SongName"   Content="{Binding Path=CurrentSongtitle, UpdateSourceTrigger=PropertyChanged}"   HorizontalAlignment="Left" Margin="197,185,0,0" VerticalAlignment="Top"/>
+    </Grid>
+    
 </UserControl>
