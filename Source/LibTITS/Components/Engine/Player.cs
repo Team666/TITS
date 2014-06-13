@@ -107,6 +107,15 @@ namespace TITS.Components.Engine
         }
 
         /// <summary>
+        /// Gets the current song's Length
+        /// </summary>
+        public TimeSpan Length
+        {
+            get
+            { return _zplayer.Length; }
+        }
+
+        /// <summary>
         /// Gets or sets the player volume as a value from 0 to 100.
         /// </summary>
         public int Volume
