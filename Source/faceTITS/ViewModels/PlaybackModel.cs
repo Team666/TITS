@@ -70,7 +70,7 @@ namespace faceTITS
         {
             get
             {
-                return (double)_player.Position.Seconds;
+                return (double)_player.Position.TotalMilliseconds;
             }
             set
             {
@@ -87,9 +87,9 @@ namespace faceTITS
                 _timer.Start();
 
                 if (_player.CurrentSong == null)
-                    return 100.0;
+                    return 0;
 
-                return (double)_player.CurrentSong.Length.Seconds;
+                return (double)_player.Length.TotalMilliseconds;
             }
         }
 
@@ -110,6 +110,7 @@ namespace faceTITS
             if (_player.Status == TITS.Components.Engine.PlaybackStatus.Stopped)
             {
                 _player.StartPlaying();
+                NotifyPropertyChanged("MaximumSliderValue");
             }
             else
             {
@@ -117,7 +118,6 @@ namespace faceTITS
             }
 
             NotifyPropertyChanged("PlayButtonContent");
-            NotifyPropertyChanged("MaximumSliderValue");
         }
 
         public void PreviousSong()
