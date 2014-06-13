@@ -9,17 +9,22 @@ namespace faceTITS
     public class PlaybackModel : INotifyPropertyChanged
 	{
         private TITS.Components.NowPlaying _player;
+
+        private System.Windows.Threading.DispatcherTimer _timer;
+
         public PlaybackModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
             {
-            _player = App.Player;
+                _player = App.Player;
 
-            _player.SongChanged += (sender, e) =>
-                {
-                    NotifyPropertyChanged("CurrentArtist");
-                    NotifyPropertyChanged("CurrentSongtitle");
-                };
+                _player.SongChanged += (sender, e) =>
+                    {
+                        NotifyPropertyChanged("CurrentArtist");
+                        NotifyPropertyChanged("CurrentSongtitle");
+                    };
+
+                _timer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.DataBind);
             }
         }
 
@@ -45,9 +50,59 @@ namespace faceTITS
             }
         }
 
+        public string PlayButtonContent
+        {
+            get
+            {
+                return _player.Status.ToString();
+            }
+        }
+
+        public string CurrentRepeatMode
+        {
+            get
+            {
+                return _player.RepeatMode.ToString();
+            }
+        }
+        
+        public double CurrentSliderPosition
+        {
+            get
+            {
+                return (double)_player.Position.Seconds;
+            }
+            set
+            {
+            }
+        }
+        
+        public double MaximumSliderValue
+        {
+            get
+            {
+                _timer.Stop();
+                _timer.Interval = new TimeSpan(0, 0, 1);
+                _timer.Tick += TimerTickHandler;
+                _timer.Start();
+
+                if (_player.CurrentSong == null)
+                    return 100.0;
+
+                return (double)_player.CurrentSong.Length.Seconds;
+            }
+        }
+
+        private void TimerTickHandler(object sender, object e)
+        {
+            NotifyPropertyChanged("CurrentSliderPosition");
+        }
+
+
         public void NextSong()
         {
             _player.Next(forcedNext: true);
+            NotifyPropertyChanged("MaximumSliderValue");
         }
 
         public void Play()
@@ -60,19 +115,15 @@ namespace faceTITS
             {
                 _player.Pause();
             }
+
+            NotifyPropertyChanged("PlayButtonContent");
+            NotifyPropertyChanged("MaximumSliderValue");
         }
 
         public void PreviousSong()
         {
             _player.Previous();
-        }
-
-        public string CurrentRepeatMode
-        {
-            get
-            {
-                return _player.RepeatMode.ToString();
-            }
+            NotifyPropertyChanged("MaximumSliderValue");
         }
 
         public void CycleRepeatMode()

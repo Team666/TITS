@@ -8,8 +8,7 @@
         MinHeight="{Binding RelativeSource={RelativeSource Self}, Path=InitialMinHeight}" Width="280">
 
     <Grid>
-        <TITS:PlaybackControls Margin="10,10,10,39" />
-        <Slider x:Name="SongProgress" Margin="10,0,10,10" Height="24" VerticalAlignment="Bottom"/>
+        <TITS:PlaybackControls Margin="16,10" />
     </Grid>
 
 </Window>

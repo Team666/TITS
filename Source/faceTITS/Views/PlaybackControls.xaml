@@ -5,7 +5,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	xmlns:local="clr-namespace:faceTITS"
-	x:Class="faceTITS.PlaybackControls" Width="240" Height="120">
+	x:Class="faceTITS.PlaybackControls" Width="240" Height="178">
 
     <UserControl.Resources>
         <local:PlaybackModel x:Key="PlaybackModelDataSource" />
@@ -18,10 +18,11 @@
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="36*"/>
+                <RowDefinition Height="36*"/>
+                <RowDefinition Height="35*"/>
+                <RowDefinition Height="25*"/>
+                <RowDefinition Height="46*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -29,14 +30,17 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Label  x:Name="SongArtist" Content="{Binding Path=CurrentArtist,    UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
-            <Label  x:Name="SongName"   Content="{Binding Path=CurrentSongtitle, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
+            <Label  x:Name="SongArtist" Content="{Binding Path=CurrentArtist}"    HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
 
-            <Button x:Name="PreviousSongButton" Content="Previous" Click="PreviousSongButton_Click" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" />
-            <Button x:Name="PlayButton"         Content="Play"     Click="PlayButton_Click"         Grid.Row="2" Grid.Column="1" Margin="10,0" />
-            <Button x:Name="NextSongButton"     Content="Next"     Click="NextSongButton_Click"     Grid.Row="2" Grid.Column="2" Margin="10,0,0,0" />
+            <Label  x:Name="SongName"   Content="{Binding Path=CurrentSongtitle}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
+
+            <Button x:Name="PreviousSongButton" Content="Previous"                             Click="PreviousSongButton_Click" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" />
+            <Button x:Name="PlayButton"         Content="{Binding Path=PlayButtonContent}"     Click="PlayButton_Click"         Grid.Row="2" Grid.Column="1" Margin="0,0" />
+            <Button x:Name="NextSongButton"     Content="Next"                                 Click="NextSongButton_Click"     Grid.Row="2" Grid.Column="2" Margin="10,0,0,0" />
 
             <Button x:Name="RepeatModeCycleButton" Content="{Binding Path=CurrentRepeatMode}" Grid.Row="3" Grid.Column="0" Margin="0,0,10,0" Click="RepeatModeCycleButton_Click" />
+
+            <Slider x:Name="PlaybackPositionSlider" Value="{Binding Path=CurrentSliderPosition}" Minimum="0" Maximum="{Binding Path=MaximumSliderValue}" Grid.Row="4" Grid.ColumnSpan="3" Margin="0,5" VerticalAlignment="Center" Height="auto"/>
         </Grid>
     </Grid>
 

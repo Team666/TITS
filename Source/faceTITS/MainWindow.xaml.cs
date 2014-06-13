@@ -23,14 +23,14 @@ namespace faceTITS
     {
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
             App.Player.Playlist = new TITS.Library.Playlist();
-            App.Player.Playlist.AddFromDirectory(@"F:\Steam\steamapps\common\FTL Faster Than Light\FTL AE Soundtrack");
-            App.Player.StartPlaying();
+            App.Player.Playlist.AddFromDirectory(@"P:\Music\Greatest Hits");
+            //App.Player.StartPlaying();
 
             this.MinWidth  = this.Width;
             this.MinHeight = this.Height;
