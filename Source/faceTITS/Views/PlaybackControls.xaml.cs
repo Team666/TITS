@@ -15,9 +15,9 @@ namespace faceTITS
 	/// <summary>
 	/// Interaction logic for View1.xaml
 	/// </summary>
-	public partial class PlayControls : UserControl
+	public partial class PlaybackControls : UserControl
 	{
-        public PlayControls()
+        public PlaybackControls()
 		{
 			this.InitializeComponent();
 
@@ -26,19 +26,19 @@ namespace faceTITS
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            var context = (View1Model) this.DataContext;
+            var context = (PlaybackModel) this.DataContext;
             context.Play();
         }
 
         private void NextsongButton_Click(object sender, RoutedEventArgs e)
         {
-            var context = (View1Model) this.DataContext;
+            var context = (PlaybackModel)this.DataContext;
             context.NextSong();
         }
 
         private void PreviousSongButton_Click(object sender, RoutedEventArgs e)
         {
-            var context = (View1Model) this.DataContext;
+            var context = (PlaybackModel)this.DataContext;
             context.PreviousSong();
         }
 	}
