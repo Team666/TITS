@@ -234,6 +234,27 @@ namespace TITS.Library
         }
 
         /// <summary>
+        /// Adds the specified song to the end of the playlist.
+        /// </summary>
+        /// <param name="item">The song to be added.</param>
+        public new void Add(Song item)
+        {
+            if (item != null)
+            {
+                var extension = Path.GetExtension(item.FileName).ToLower();
+                var isSupported = Components.Engine.Player.SupportedFileTypes.Contains(extension);
+                if (isSupported)
+                {
+                    base.Add(item);
+                }
+                else
+                {
+                    System.Diagnostics.Trace.WriteLine(item.FileName + " is not supported; not added to playlist.");
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds music files from the specified directory to the playlist.
         /// </summary>
         /// <param name="path">The directory containing the files to add.</param>
@@ -243,8 +264,7 @@ namespace TITS.Library
             foreach (string file in Directory.EnumerateFiles(path, "*.*", (recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)))
             {
                 FileInfo fi = new FileInfo(file);
-                bool isSupported = Components.Engine.Player.SupportedFileTypes.Contains(fi.Extension);
-                if (!fi.Attributes.HasFlag(FileAttributes.Hidden) && isSupported)
+                if (!fi.Attributes.HasFlag(FileAttributes.Hidden))
                     Add(new Song(file));
             }
         }
