@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace faceTITS
 {
     public class PlaybackModel : INotifyPropertyChanged
-	{
+    {
         private TITS.Components.NowPlaying _player;
 
         private System.Windows.Threading.DispatcherTimer _timer;
@@ -22,6 +22,21 @@ namespace faceTITS
                     {
                         NotifyPropertyChanged("CurrentArtist");
                         NotifyPropertyChanged("CurrentSongtitle");
+                        NotifyPropertyChanged("MaximumSliderValue");
+                    };
+                _player.PlaybackStarted += (sender, e) =>
+                    {
+                        NotifyPropertyChanged("PlayButtonContent");
+                        NotifyPropertyChanged("MaximumSliderValue");
+                    };
+                _player.PlaybackPaused += (sender, e) =>
+                    {
+                        NotifyPropertyChanged("PlayButtonContent");
+                    };
+                _player.PlaybackStopped += (sender, e) =>
+                    {
+                        NotifyPropertyChanged("PlayButtonContent");
+                        NotifyPropertyChanged("MaximumSliderValue");
                     };
 
                 _timer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.DataBind);
@@ -74,7 +89,7 @@ namespace faceTITS
                 return _player.RepeatMode.ToString();
             }
         }
-        
+
         public double CurrentSliderPosition
         {
             get
@@ -85,7 +100,7 @@ namespace faceTITS
             {
             }
         }
-        
+
         public double MaximumSliderValue
         {
             get
@@ -142,16 +157,16 @@ namespace faceTITS
             NotifyPropertyChanged("CurrentRepeatMode");
         }
 
-		#region INotifyPropertyChanged
-		public event PropertyChangedEventHandler PropertyChanged;
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		private void NotifyPropertyChanged(String info)
-		{
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(info));
-			}
-		}
-		#endregion
-	}
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+        #endregion
+    }
 }
