@@ -103,6 +103,20 @@ namespace TITS.Components.Engine
         }
 
         /// <summary>
+        /// Gets the current song's Length
+        /// </summary>
+        public TimeSpan Length
+        {
+            get
+            {
+                TStreamInfo streamInfo = new TStreamInfo();
+                Engine.GetStreamInfo(ref streamInfo);
+
+                return streamInfo.Length.ToTimeSpan();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the player volume as a value from 0 to 100.
         /// </summary>
         public int Volume

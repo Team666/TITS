@@ -44,6 +44,11 @@ namespace TITS.Components.Engine
         TimeSpan Position { get; }
 
         /// <summary>
+        /// Gets the current song's Length
+        /// </summary>
+        TimeSpan Length { get; }
+
+        /// <summary>
         /// Gets or sets the player volume as a value from 0 to 100.
         /// </summary>
         int Volume { get; set; }

@@ -161,6 +161,14 @@ namespace TITS.Components
         }
 
         /// <summary>
+        /// Gets the current song's Length
+        /// </summary>
+        public TimeSpan Length
+        {
+            get { return _player.Length; }
+        }
+
+        /// <summary>
         /// Gets or sets the player volume as a value from 0 to 100.
         /// </summary>
         public int Volume
