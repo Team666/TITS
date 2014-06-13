@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Keyboard\KeyboardListener.cs" />
     <Compile Include="ViewModels\PlaybackModel.cs" />
     <Compile Include="Views\PlaybackControls.xaml.cs">
       <DependentUpon>PlaybackControls.xaml</DependentUpon>
