@@ -32,7 +32,7 @@ namespace faceTITS
         {
             get
             {
-                if (_player.CurrentSong != null)
+                if (_player.CurrentSong != null && App.Player.CurrentSong.Metadata != null)
                     return App.Player.CurrentSong.Metadata.Artist.Name;
                 else
                     return "";
@@ -44,7 +44,16 @@ namespace faceTITS
             get
             {
                 if (_player.CurrentSong != null)
-                    return App.Player.CurrentSong.Metadata.Title;
+                {
+                    if (App.Player.CurrentSong.Metadata != null)
+                    {
+                        return App.Player.CurrentSong.Metadata.Title;
+                    }
+                    else
+                    {
+                        return System.IO.Path.GetFileName(App.Player.CurrentSong.FileName);
+                    }
+                }
                 else
                     return "";
             }
