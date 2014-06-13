@@ -5,10 +5,10 @@
         Title="MainWindow" Loaded="window_Loaded"
         SizeToContent="WidthAndHeight"
         MinWidth ="{Binding RelativeSource={RelativeSource Self}, Path=InitialMinWidth}"
-        MinHeight="{Binding RelativeSource={RelativeSource Self}, Path=InitialMinHeight}">
+        MinHeight="{Binding RelativeSource={RelativeSource Self}, Path=InitialMinHeight}" Width="280">
 
     <Grid>
-        <TITS:PlayControls Margin="10,10,10,39" />
+        <TITS:PlaybackControls Margin="10,10,10,39" />
         <Slider x:Name="SongProgress" Margin="10,0,10,10" Height="24" VerticalAlignment="Bottom"/>
     </Grid>
 

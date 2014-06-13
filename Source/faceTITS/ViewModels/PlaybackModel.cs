@@ -6,10 +6,10 @@ using System.ComponentModel;
 
 namespace faceTITS
 {
-    public class View1Model : INotifyPropertyChanged
+    public class PlaybackModel : INotifyPropertyChanged
 	{
         private TITS.Components.NowPlaying _player;
-        public View1Model()
+        public PlaybackModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
             {

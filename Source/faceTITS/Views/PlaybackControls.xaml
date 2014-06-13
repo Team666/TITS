@@ -5,14 +5,14 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	xmlns:local="clr-namespace:faceTITS"
-	x:Class="faceTITS.PlayControls" Width="524.667" Height="113">
+	x:Class="faceTITS.PlaybackControls" Width="240" Height="100">
 
     <UserControl.Resources>
-        <local:View1Model x:Key="View1ModelDataSource" />
+        <local:PlaybackModel x:Key="PlaybackModelDataSource" />
     </UserControl.Resources>
 
     <UserControl.DataContext>
-        <StaticResource ResourceKey="View1ModelDataSource" />
+        <StaticResource ResourceKey="PlaybackModelDataSource" />
     </UserControl.DataContext>
 
     <Grid>
@@ -31,9 +31,9 @@
             <Label  x:Name="SongArtist" Content="{Binding Path=CurrentArtist,    UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Grid.Row="0" Grid.Column="0"/>
             <Label  x:Name="SongName"   Content="{Binding Path=CurrentSongtitle, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Grid.Row="1" Grid.Column="0"/>
 
-            <Button x:Name="PreviousSongButton" Content="Previous" Click="PreviousSongButton_Click" Padding="10,0" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" />
-            <Button x:Name="PlayButton"         Content="Play"     Click="PlayButton_Click"         Padding="10,0" Grid.Row="2" Grid.Column="1" Margin="10,0" />
-            <Button x:Name="NextSongButton"     Content="Next"     Click="NextsongButton_Click"     Padding="10,0" Grid.Row="2" Grid.Column="2" Margin="10,0,0,0" />
+            <Button x:Name="PreviousSongButton" Content="Previous" Click="PreviousSongButton_Click" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" />
+            <Button x:Name="PlayButton"         Content="Play"     Click="PlayButton_Click"         Grid.Row="2" Grid.Column="1" Margin="10,0" />
+            <Button x:Name="NextSongButton"     Content="Next"     Click="NextsongButton_Click"     Grid.Row="2" Grid.Column="2" Margin="10,0,0,0" />
         </Grid>
     </Grid>
 
