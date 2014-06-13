@@ -30,7 +30,7 @@ namespace faceTITS
             context.Play();
         }
 
-        private void NextsongButton_Click(object sender, RoutedEventArgs e)
+        private void NextSongButton_Click(object sender, RoutedEventArgs e)
         {
             var context = (PlaybackModel)this.DataContext;
             context.NextSong();
@@ -40,6 +40,12 @@ namespace faceTITS
         {
             var context = (PlaybackModel)this.DataContext;
             context.PreviousSong();
+        }
+
+        private void RepeatModeCycleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var context = (PlaybackModel)this.DataContext;
+            context.CycleRepeatMode();
         }
 	}
 }

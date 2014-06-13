@@ -67,6 +67,21 @@ namespace faceTITS
             _player.Previous();
         }
 
+        public string CurrentRepeatMode
+        {
+            get
+            {
+                return _player.RepeatMode.ToString();
+            }
+        }
+
+        public void CycleRepeatMode()
+        {
+            _player.CycleRepeatMode();
+
+            NotifyPropertyChanged("CurrentRepeatMode");
+        }
+
 		#region INotifyPropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
 
