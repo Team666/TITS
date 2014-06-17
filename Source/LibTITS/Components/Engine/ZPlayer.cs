@@ -50,6 +50,8 @@ namespace TITS.Components.Engine
         public ZPlayer(Player parent)
         {
             _parent = parent;
+            _parent.PropertyChanged += _parent_PropertyChanged;
+
             _engine = new ZPlay();
             if (_engine.SetSettings(TSettingID.sidAccurateLength, 1) == 0)
                 throw new EngineException(_engine.GetError());
@@ -258,14 +260,12 @@ namespace TITS.Components.Engine
 
         /// <summary>
         /// Queues the next song for playback.
-        /// TODO: REFACTOR
         /// </summary>
         public void Enqueue()
         {
-            if (_parent.Queue.Count > 0)
+            if (_parent.QueuedSong != null)
             {
-                Song next = _parent.Queue.Peek();
-                Queue(next);
+                Queue(_parent.QueuedSong);
             }
             else
             {
@@ -279,7 +279,13 @@ namespace TITS.Components.Engine
         /// <param name="song">The song to queue.</param>
         public void Queue(Song song)
         {
+            if (song == null)
+            {
+                throw new ArgumentNullException("song");
+            }
+
             Debug.WriteLine("Queueing {0}", song);
+            // Engine.Close(); // Clears the gapless queue
             Engine.AddFile(song.FileName, TStreamFormat.sfAutodetect);
         }
 
@@ -291,7 +297,7 @@ namespace TITS.Components.Engine
                     // param1: index of playing song 
                     // param2: number of songs remaining in gapless queue
                     // return: not used 
-                    var next = _parent.Queue.Dequeue();
+                    var next = _parent.Dequeue();
 
                     Debug.WriteLine("MsgNextSongAsync: {0} => {1}", _currentSong, next);
 
@@ -309,6 +315,17 @@ namespace TITS.Components.Engine
             }
 
             return 0;
+        }
+
+        private void _parent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var player = sender as Player;
+            if (e.PropertyName == "QueuedSong" && player.QueuedSong != null)
+            {
+                // The queued song has changed, replace the internal queue
+                Debug.WriteLine("ZPlayer: Queued song is now {0}", player.QueuedSong);
+                Queue(player.QueuedSong);
+            }
         }
     }
 }

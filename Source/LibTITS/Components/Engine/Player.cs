@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,10 +11,11 @@ namespace TITS.Components.Engine
     /// <summary>
     /// Represents one or more playback engines.
     /// </summary>
-    class Player : IPlayer
+    class Player : IPlayer, INotifyPropertyChanged
     {
         private ZPlayer _zplayer;
         private string[] _supportedFileTypes;
+        private Library.Song _queuedSong;
 
         /// <summary>
         /// Occurs when the engine has started or resumed playback.
@@ -66,20 +68,19 @@ namespace TITS.Components.Engine
         public event EventHandler<SongEventArgs> PlaybackError;
 
         /// <summary>
-        /// Gets the queue containing songs to play.
+        /// Occurs when a property has changed.
         /// </summary>
-        public EngineQueue Queue { get; private set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Initializes the engine players.
         /// </summary>
-        public Player(Action NotifyPlaylistOfDequeueAction)
+        public Player()
         {
             _zplayer = new ZPlayer(this);
             Engine = _zplayer; // Default engine
 
             _supportedFileTypes = ZPlayer.SupportedFileTypes;
-            Queue = new EngineQueue(NotifyPlaylistOfDequeueAction);
         }
 
         /// <summary>
@@ -193,10 +194,10 @@ namespace TITS.Components.Engine
         }
 
         [Obsolete("Needs access to a playlist, NowPlaying is handling Previous")]
-		public void Previous()
-		{
-			throw new NotImplementedException();
-		}
+        public void Previous()
+        {
+            throw new NotImplementedException();
+        }
 
         public void ChangeSong(Library.Song song)
         {
@@ -222,6 +223,39 @@ namespace TITS.Components.Engine
         }
 
         /// <summary>
+        /// Gets or sets the song that will be queued for playback.
+        /// </summary>
+        public Library.Song QueuedSong
+        {
+            get { return _queuedSong; }
+            set
+            {
+                if (value != _queuedSong)
+                {
+                    _queuedSong = value;
+                    NotifyPropertyChanged("QueuedSong");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Takes the queued song from the queue and returns it.
+        /// </summary>
+        /// <returns>The song that should be queued for playback.</returns>
+        /// <exception cref="InvalidOperationException">The queue is empty.</exception>
+        public Library.Song Dequeue()
+        {
+            if (QueuedSong == null)
+            {
+                throw new InvalidOperationException("There is no song queued for playback.");
+            }
+
+            var next = QueuedSong;
+            QueuedSong = null; // Notifies the playlist to put the next song in the queue
+            return next;
+        }
+
+        /// <summary>
         /// Determines which engine can be used to play the specified song. If
         /// it is not supported by any engine, returns null.
         /// </summary>
@@ -237,5 +271,17 @@ namespace TITS.Components.Engine
             if (PlaybackError != null) PlaybackError(this, new SongEventArgs(song));
             return null;
         }
-	}
+
+        /// <summary>
+        /// Notifies clients when a property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the changed property.</param>
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }

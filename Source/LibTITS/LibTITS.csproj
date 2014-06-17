@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Engine\EngineQueue.cs" />
     <Compile Include="Components\Engine\FileNotSupportedException.cs" />
     <Compile Include="Components\Engine\IPlayer.cs" />
     <Compile Include="Components\Engine\PlaybackStatus.cs" />

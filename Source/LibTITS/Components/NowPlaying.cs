@@ -71,8 +71,8 @@ namespace TITS.Components
         /// </summary>
         public NowPlaying()
         {
-            _player = new Engine.Player(this.NotifyPlaylistOfDequeue);
-            _player.Queue.QueueEmpty += (sender, e) => { this.EnqueueNextSong(); };
+            _player = new Engine.Player();
+            _player.PropertyChanged += _player_PropertyChanged;
         }
 
         /// <summary>
@@ -96,18 +96,6 @@ namespace TITS.Components
         }
 
         /// <summary>
-        /// Notifies playlist of automatic song change (next song) by calling its OffsetIndexBy method
-        /// this is needed for EngineQueue once it proceeds to play the queued song.
-        /// </summary>
-        private void NotifyPlaylistOfDequeue()
-        {
-            if (RepeatMode != RepeatModes.Track)
-            {
-                _playlist.OffsetIndexBy(+1);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the current repeat mode.
         /// </summary>
         private RepeatModes _repeatMode;
@@ -124,7 +112,7 @@ namespace TITS.Components
 
                 if (_repeatMode == RepeatModes.Track)
                 {
-                    _player.Queue.Flush();
+                    EnqueueNextSong();
                 }
             }
         }
@@ -201,7 +189,7 @@ namespace TITS.Components
             if (Playlist.Count > 0)
             {
                 EnqueueNextSong();
-                _player.Play(_player.Queue.Dequeue());
+                _player.Play(_player.Dequeue());
             }
         }
 
@@ -230,7 +218,6 @@ namespace TITS.Components
 
             if (song != null)
             {
-                _player.Queue.Flush();
                 _player.ChangeSong(song);
             }
         }
@@ -241,7 +228,6 @@ namespace TITS.Components
 
             if (song != null)
             {
-                _player.Queue.Flush();
                 _player.ChangeSong(song);
             }
 		}
@@ -269,10 +255,12 @@ namespace TITS.Components
 
             if (next != null)
             {
-                _player.Queue.Enqueue(next);
+                Debug.WriteLine("NowPlaying: Enqueued {0}", next);
+                _player.QueuedSong = next;
             }
             else
             {
+                Debug.WriteLine("NowPlaying: Nothing enqueued");
                 return;
             }
         }
@@ -292,6 +280,21 @@ namespace TITS.Components
             if (this.PlaylistChanged != null)
             {
                 this.PlaylistChanged(sender, new CollectionChangeEventArgs(CollectionChangeAction.Refresh, "NowPlaying"));
+            }
+        }
+
+        void _player_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var player = sender as Engine.Player;
+            if (e.PropertyName == "QueuedSong" && player.QueuedSong == null)
+            {
+                if (RepeatMode != RepeatModes.Track)
+                {
+                    _playlist.OffsetIndexBy(+1);
+                }
+
+                // The queued song was consumed, so queue a new one
+                EnqueueNextSong();
             }
         }
     }
