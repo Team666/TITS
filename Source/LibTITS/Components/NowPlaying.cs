@@ -228,23 +228,24 @@ namespace TITS.Components
         {
             var song = Playlist.NextSong(peek: false, forcedNext: forcedNext);
 
-            if (song != null)
-            {
-                _player.Queue.Flush();
-                _player.ChangeSong(song);
-            }
+            ChangeSong(song);
         }
 
 		public void Previous()
 		{
             var song = Playlist.PreviousSong(peek: false);
 
+            ChangeSong(song);
+		}
+
+        public void ChangeSong(Song song)
+        {
             if (song != null)
             {
                 _player.Queue.Flush();
                 _player.ChangeSong(song);
             }
-		}
+        }
 
         /// <summary>
         /// Enqueues the next song for playback

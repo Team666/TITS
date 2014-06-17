@@ -22,6 +22,15 @@ namespace faceTITS.ViewModels
 
                 return _player.Playlist.Index;
             }
+
+            set
+            {
+                _player.Stop();
+                _player.Playlist.SetIndex(value);
+
+                var song = _player.Playlist.CurrentSong;
+                _player.ChangeSong(song);
+            }
         }
 
         public List<TITS.Library.Song> Playlist

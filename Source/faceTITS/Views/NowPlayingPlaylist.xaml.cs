@@ -25,11 +25,26 @@ namespace faceTITS.Views
             InitializeComponent();
         }
 
-        // SICK HACK ~~ OMG ~~ ELITE NO SCOPE
-        private void PlaylistListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        int _currentSongIndex;
+        public int CurrentSongIndex
         {
-            var context = (faceTITS.ViewModels.NowPlayingPlaylistModel)this.DataContext;
-            context.HookupHandlers();
+            get
+            {
+                return _currentSongIndex;
+            }
+
+            set
+            {
+                _currentSongIndex = value;
+                PlaylistListBox.ActiveItem = value;
+                App.Player.Playlist.SetIndex(value, noCalculate: true);
+            }
         }
+
+        private void PlaylistListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            PlaylistListBox.SetStaticRefToSelf();
+        }
+
     }
 }

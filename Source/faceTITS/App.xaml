@@ -4,8 +4,13 @@
              StartupUri="MainWindow.xaml"
 			 Startup="Application_Startup"
 			 Exit="Application_Exit">
-    
-    <Application.Resources>         
+
+    <Application.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="Styles1.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
     </Application.Resources>
     
 </Application>
