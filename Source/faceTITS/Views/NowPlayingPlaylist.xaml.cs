@@ -44,6 +44,7 @@ namespace faceTITS.Views
         private void PlaylistListBox_Loaded(object sender, RoutedEventArgs e)
         {
             PlaylistListBox.SetStaticRefToSelf();
+            PlaylistListBox.MaxHeight = System.Windows.SystemParameters.WorkArea.Height - 500.0;
         }
 
     }
