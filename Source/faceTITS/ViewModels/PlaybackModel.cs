@@ -78,7 +78,20 @@ namespace faceTITS
         {
             get
             {
-                return _player.Status.ToString();
+                switch (_player.Status)
+                {
+                    case TITS.Components.Engine.PlaybackStatus.Stopped:
+                        return "Play";
+
+                    case TITS.Components.Engine.PlaybackStatus.Paused:
+                        return "Unpause";
+
+                    case TITS.Components.Engine.PlaybackStatus.Playing:
+                        return "Pause";
+
+                    default:
+                        return "No status";
+                }
             }
         }
 

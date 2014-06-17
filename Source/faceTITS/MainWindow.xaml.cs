@@ -55,13 +55,12 @@ namespace faceTITS
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
-            App.Player.Playlist = new TITS.Library.Playlist();
+            var playlist = new TITS.Library.Playlist();
 
             var path = SelectDirectory();
-            App.Player.Playlist.AddFromDirectory(path);
+            playlist.AddFromDirectory(path);
 
-
-            //App.Player.StartPlaying();
+            App.Player.Playlist = playlist;
 
             this.MinWidth  = this.Width;
             this.MinHeight = this.Height;

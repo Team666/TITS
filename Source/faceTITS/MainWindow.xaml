@@ -1,14 +1,16 @@
-﻿<Window x:Name="window" x:Class="faceTITS.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:TITS="clr-namespace:faceTITS"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:Views="clr-namespace:faceTITS.Views" mc:Ignorable="d" x:Name="window" x:Class="faceTITS.MainWindow"
         Title="MainWindow" Loaded="window_Loaded"
         SizeToContent="WidthAndHeight"
-        MinWidth ="{Binding RelativeSource={RelativeSource Self}, Path=InitialMinWidth}"
-        MinHeight="{Binding RelativeSource={RelativeSource Self}, Path=InitialMinHeight}" Width="280">
+        MinWidth ="{Binding InitialMinWidth, RelativeSource={RelativeSource Self}}"
+        MinHeight="{Binding InitialMinHeight, RelativeSource={RelativeSource Self}}" Width="291" Height="431">
 
     <Grid>
-        <TITS:PlaybackControls Margin="16,10" />
+        <TITS:PlaybackControls Margin="22,0,21,10" Height="178" VerticalAlignment="Bottom" />
+        <Views:NowPlayingPlaylist Margin="10,10,10,193"/>
     </Grid>
 
 </Window>
