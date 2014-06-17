@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using TITS.Library;
+using System.ComponentModel;
 
 namespace TITS.Components
 {
@@ -89,6 +90,8 @@ namespace TITS.Components
                 // Have to also give the new Playlist the current repeatMode
                 _playlist = value;
                 _playlist.RepeatMode = _repeatMode;
+                _playlist.CollectionChanged += PlaylistChanged;
+                onPlaylistChanged(_playlist);
             }
         }
 
@@ -255,14 +258,13 @@ namespace TITS.Components
             }
 
             Song next;
-
-            if (RepeatMode == RepeatModes.Track)
-            {
-                next = Playlist.CurrentSong;
-            }
-            else
+            if (Playlist.Index < 0 || RepeatMode != RepeatModes.Track)
             {
                 next = Playlist.NextSong(peek: true);
+            }
+            else // if (RepeatMode == RepeatModes.Track)
+            {
+                next = Playlist.CurrentSong;
             }
 
             if (next != null)
@@ -280,6 +282,16 @@ namespace TITS.Components
             get
             {
                 return _player.CurrentSong;
+            }
+        }
+
+        public event System.ComponentModel.CollectionChangeEventHandler PlaylistChanged;
+
+        private void onPlaylistChanged(object sender)
+        {
+            if (this.PlaylistChanged != null)
+            {
+                this.PlaylistChanged(sender, new CollectionChangeEventArgs(CollectionChangeAction.Refresh, "NowPlaying"));
             }
         }
     }

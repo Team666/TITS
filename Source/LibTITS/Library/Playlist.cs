@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using TITS.Components;
+using System.ComponentModel;
 
 namespace TITS.Library
 {
-    public class Playlist : List<Song>
+    public class Playlist : List<Song>, INotifyPropertyChanged
     {
         private Playlist _original;
         private int _index = -1;
@@ -35,7 +36,9 @@ namespace TITS.Library
             get
             {
                 if (_index < 0)
+                {
                     return null;
+                }
 
                 return this[Index];
             }
@@ -50,6 +53,12 @@ namespace TITS.Library
         {
             if (RepeatMode == RepeatModes.Track && !forcedNext)
             {
+                if (_index < 0)
+                {
+                    _index++;
+                    SetIndex(_index, noCalculate: false);
+                }
+
                 return this[_index];   
             }
 
@@ -69,7 +78,7 @@ namespace TITS.Library
 
             if(!peek)
             {
-                _index = nextSongIndex;
+                SetIndex(nextSongIndex, noCalculate: true);
             }
 
             return this[nextSongIndex];
@@ -94,7 +103,7 @@ namespace TITS.Library
 
                 if (!peek)
                 {
-                    _index = newIndex;
+                    SetIndex(newIndex, noCalculate: true);
                 }
 
                 return this[newIndex];
@@ -105,7 +114,7 @@ namespace TITS.Library
 
                 if (!peek)
                 {
-                    _index = newIndex;
+                    SetIndex(newIndex, noCalculate: true);
                 }
 
                 return this[_index];
@@ -123,9 +132,11 @@ namespace TITS.Library
             }
         }
 
-        public void SetIndex(int newIndex)
+        public void SetIndex(int newIndex, bool noCalculate = false)
         {
-            _index = CalculateIndex(newIndex);
+            _index = noCalculate ? newIndex : CalculateIndex(newIndex);
+
+            onPropertyChanged(this, "Index");
         }
 
         /// <summary>
@@ -176,7 +187,7 @@ namespace TITS.Library
 
         public void OffsetIndexBy(int offset)
         {
-            _index = CalculateIndex(_index + offset);
+            SetIndex(_index + offset);
         }
 
         /// <summary>
@@ -187,11 +198,17 @@ namespace TITS.Library
         public static Playlist Load(string path)
         {
             if (Directory.Exists(path))
+            {
                 return LoadFromDirectory(path);
+            }
             else if (File.Exists(path))
+            {
                 return LoadFromFile(path);
+            }
             else
+            {
                 return Playlist.Empty;
+            }
         }
 
         /// <summary>
@@ -226,11 +243,19 @@ namespace TITS.Library
         public void Add(string path)
         {
             if (Directory.Exists(path))
+            {
                 AddFromDirectory(path);
+            }
             else if (File.Exists(path))
+            {
                 Add(new Song(path));
+            }
             else
+            {
                 System.Diagnostics.Trace.WriteLine("Attempted to add non-existing file or directory to playlist " + path);
+            }
+
+            onCollectionChanged(this);
         }
 
         /// <summary>
@@ -252,6 +277,8 @@ namespace TITS.Library
                     System.Diagnostics.Trace.WriteLine(item.FileName + " is not supported; not added to playlist.");
                 }
             }
+
+            onCollectionChanged(this);
         }
 
         /// <summary>
@@ -265,8 +292,12 @@ namespace TITS.Library
             {
                 FileInfo fi = new FileInfo(file);
                 if (!fi.Attributes.HasFlag(FileAttributes.Hidden))
+                {
                     Add(new Song(file));
+                }
             }
+
+            onCollectionChanged(this);
         }
 
         /// <summary>
@@ -295,6 +326,8 @@ namespace TITS.Library
                     System.Diagnostics.Trace.WriteLine("Unsupported playlist format: " + path, "Debug");
                     break;
             }
+
+            onCollectionChanged(this);
         }
 
         public void Shuffle()
@@ -310,6 +343,28 @@ namespace TITS.Library
                 this[k] = this[n];
                 this[n] = value;
             }
+
+            onCollectionChanged(this);
         }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public event System.ComponentModel.CollectionChangeEventHandler CollectionChanged;
+
+        private void onCollectionChanged(object sender)
+        {
+            if (this.CollectionChanged != null)
+            {
+                this.CollectionChanged(sender, new CollectionChangeEventArgs(CollectionChangeAction.Refresh, "NowPlaying"));
+            }
+        }
+
+        private void onPropertyChanged(object sender, string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(sender, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
     }
 }
