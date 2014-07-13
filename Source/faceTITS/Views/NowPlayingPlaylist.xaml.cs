@@ -36,7 +36,6 @@ namespace faceTITS.Views
             set
             {
                 _currentSongIndex = value;
-                PlaylistListBox.ActiveItem = value;
                 App.Player.Playlist.SetIndex(value, noCalculate: true);
             }
         }

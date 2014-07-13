@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Data;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
@@ -25,8 +26,8 @@ namespace faceTITS.UserControls
         {
         }
 
-        public static readonly DependencyProperty ActiveItemProperty = 
-            DependencyProperty.RegisterAttached("ActiveItem", typeof(int), typeof(SongListBox), new PropertyMetadata(-1, onActiveItemChanged));
+         //public static readonly DependencyProperty ActiveItemProperty = 
+         //   DependencyProperty.RegisterAttached("ActiveItem", typeof(int), typeof(SongListBox), new PropertyMetadata(-1, onActiveItemChanged));
 
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
@@ -37,55 +38,32 @@ namespace faceTITS.UserControls
         {
             return new SongItem();
         }
-
-        public int ActiveItem
-        {
-            set
-            {
-                SetValue(ActiveItemProperty, value);
-
-                /*if (_activeItem > -1)
-                {
-                   (this.Items[_activeItem] as SongItem).IsActive = false;
-                }
-
-                (this.Items[value] as SongItem).IsActive = true;*/
-            }
-
-            get
-            {
-                return (int)GetValue(ActiveItemProperty);
-            }
-        }
-
-        public static void onActiveItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var oldValue = (int)e.OldValue;
-            var newValue = (int)e.NewValue;
-
-            if (control == null)
-            {
-                return;
-            }
-
-            if (oldValue > -1)
-            {
-                var oldThingy = (control.ItemContainerGenerator.ContainerFromIndex(oldValue) as SongItem);
-                oldThingy.IsActive = false;
-            }
-
-            var newThingy = (control.ItemContainerGenerator.ContainerFromIndex(newValue) as SongItem);
-            newThingy.IsActive = true;
-        }
     }
 
     class SongItem : System.Windows.Controls.ListBoxItem, INotifyPropertyChanged
     {
         public SongItem() : base()
-        {       
+        {
+            
         }
 
-        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(SongItem), new PropertyMetadata(false));
+        protected override void OnContentChanged(object oldContent, object newContent)
+        {
+            if (oldContent != null)
+            {
+                (oldContent as TITS.Library.Song).NowPlayingStateChanged -= HandleContentNowPlayingStateChanged;
+            }
+
+            base.OnContentChanged(oldContent, newContent);
+
+            if (newContent != null)
+            {
+                (newContent as TITS.Library.Song).NowPlayingStateChanged += HandleContentNowPlayingStateChanged; 
+            }
+        }
+
+        public static readonly DependencyProperty IsActiveProperty =
+            DependencyProperty.Register("IsActive", typeof(bool), typeof(SongItem), new PropertyMetadata(false));
 
         public bool IsActive
         {
@@ -97,6 +75,11 @@ namespace faceTITS.UserControls
             {
                 SetValue(IsActiveProperty, value);
             }
+        }
+
+        private void HandleContentNowPlayingStateChanged(object sender, EventArgs e)
+        {
+            IsActive = (sender as TITS.Library.Song).NowPlaying;
         }
 
         #region INotifyPropertyChanged

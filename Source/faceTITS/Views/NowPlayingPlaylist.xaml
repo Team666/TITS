@@ -16,7 +16,7 @@
         <StaticResource ResourceKey="NowPlayingPlaylistModelDataSource" />
     </UserControl.DataContext>
     
-    <local2:SongListBox x:Name="PlaylistListBox" ItemsSource="{Binding Path=Playlist}" ActiveItem="{Binding Path=SongIndex, Mode=OneWay}" Margin="10" FontSize="14" ItemContainerStyle="{StaticResource PlaylistSongItem}" Loaded="PlaylistListBox_Loaded" BorderThickness="0">
+    <local2:SongListBox x:Name="PlaylistListBox" ItemsSource="{Binding Path=Playlist}" Margin="10" FontSize="14" ItemContainerStyle="{StaticResource PlaylistSongItem}" Loaded="PlaylistListBox_Loaded" BorderThickness="0">
     </local2:SongListBox>
 
 </UserControl>

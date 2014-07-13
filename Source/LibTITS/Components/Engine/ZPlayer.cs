@@ -15,7 +15,6 @@ namespace TITS.Components.Engine
     {
         private static string[] _supportedFileTypes = { ".mp3", ".mp2", ".mp1", ".ogg", ".flac", ".oga", ".aac", ".wav" };
         private Player _parent;
-        private Song _currentSong;
         private ZPlay _engine = null;
         private TCallbackFunc EngineCallback;
 
@@ -149,11 +148,25 @@ namespace TITS.Components.Engine
             }
         }
 
+        private Song _currentSong;
         public Song CurrentSong
         {
             get
             {
                 return _currentSong;
+            }
+
+            private set
+            {
+                // Old song
+                if (_currentSong != null)
+                {
+                    _currentSong.NowPlaying = false;
+                }
+
+                // Set new song
+                _currentSong = value;
+                _currentSong.NowPlaying = true;
             }
         }
 
@@ -195,7 +208,7 @@ namespace TITS.Components.Engine
 
             if (PlaybackStarted != null)
             {
-                PlaybackStarted(this, new SongEventArgs(_currentSong));
+                PlaybackStarted(this, new SongEventArgs(CurrentSong));
             }
         }
 
@@ -218,12 +231,12 @@ namespace TITS.Components.Engine
             if (Status == PlaybackStatus.Playing)
             {
                 Engine.PausePlayback();
-                if (PlaybackPaused != null) PlaybackPaused(this, new SongEventArgs(_currentSong));
+                if (PlaybackPaused != null) PlaybackPaused(this, new SongEventArgs(CurrentSong));
             }
             else if (Status == PlaybackStatus.Paused)
             {
                 Engine.ResumePlayback();
-                if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(_currentSong));
+                if (PlaybackStarted != null) PlaybackStarted(this, new SongEventArgs(CurrentSong));
             }
         }
 
@@ -235,7 +248,7 @@ namespace TITS.Components.Engine
         {
             lock (_engine)
             {
-                _currentSong = song;
+                CurrentSong = song;
 
                 if (!Engine.OpenFile(song.FileName, TStreamFormat.sfAutodetect))
                 {
@@ -293,9 +306,9 @@ namespace TITS.Components.Engine
                     // return: not used 
                     var next = _parent.Queue.Dequeue();
 
-                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}", _currentSong, next);
+                    Debug.WriteLine("MsgNextSongAsync: {0} => {1}", CurrentSong, next);
 
-                    _currentSong = next;
+                    CurrentSong = next;
                     if (SongChanged != null)
                     {
                         SongChanged(this, new SongEventArgs(next));

@@ -25,7 +25,25 @@ namespace TITS.Library
 
         public string FileName { get; protected set; }
 
-        public bool NowPlaying { get; protected set; }
+
+        public event EventHandler NowPlayingStateChanged;
+
+        private bool _nowPlaying;
+        public bool NowPlaying 
+        { 
+            get
+            {
+                return _nowPlaying;
+            }
+            set
+            {
+                _nowPlaying = value;
+                if (NowPlayingStateChanged != null)
+                {
+                    NowPlayingStateChanged(this, new EventArgs());
+                }
+            }
+        }
 
         public Album Album { get; set; }
 
