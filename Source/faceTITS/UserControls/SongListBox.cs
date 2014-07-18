@@ -73,7 +73,10 @@ namespace faceTITS.UserControls
             }
             set
             {
-                SetValue(IsActiveProperty, value);
+                Dispatcher.Invoke(() =>
+                {
+                    SetValue(IsActiveProperty, value);
+                });
             }
         }
 
