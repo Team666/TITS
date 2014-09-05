@@ -25,7 +25,6 @@ namespace TITS.Library
 
         public string FileName { get; protected set; }
 
-
         public event EventHandler NowPlayingStateChanged;
 
         private bool _nowPlaying;

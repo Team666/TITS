@@ -7,16 +7,33 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-
+    
     <UserControl.Resources>
         <local:NowPlayingPlaylistModel x:Key="NowPlayingPlaylistModelDataSource" />
+        <local:TrackNumConverter x:Key="trackNumConverter"/>
+        <local:MathConverter x:Key="mathConverter"/>
     </UserControl.Resources>
 
     <UserControl.DataContext>
         <StaticResource ResourceKey="NowPlayingPlaylistModelDataSource" />
     </UserControl.DataContext>
-    
-    <local2:SongListBox x:Name="PlaylistListBox" ItemsSource="{Binding Path=Playlist}" Margin="10" FontSize="14" ItemContainerStyle="{StaticResource PlaylistSongItem}" Loaded="PlaylistListBox_Loaded" BorderThickness="0">
+
+    <local2:SongListBox x:Name="PlaylistListBox" ItemsSource="{Binding Path=Playlist}" Margin="10" FontSize="14" ItemContainerStyle="{StaticResource PlaylistSongItemTsu}" Loaded="PlaylistListBox_Loaded" BorderThickness="0">
+        <!-- DisplayMemberBinding="{Binding Path=Metadata.Track, Converter={StaticResource trackNumConverter}}"-->
+        <local2:SongListBox.View>
+            <GridView>
+                <GridViewColumn Header="#">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Metadata.Track, Converter={StaticResource trackNumConverter}}" 
+                                       FontFamily="Segoe UI" FontWeight="Bold" VerticalAlignment="Top"
+                                       FontSize="{Binding ElementName=PlaylistListBox, Path=FontSize, Converter={StaticResource mathConverter}, ConverterParameter=4}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn x:Name="songNameHeader" Header="Song" DisplayMemberBinding="{Binding Path=Metadata.Title}"/>
+            </GridView>
+        </local2:SongListBox.View>
     </local2:SongListBox>
 
 </UserControl>

@@ -7,6 +7,7 @@
 	<SolidColorBrush x:Key="ListBox.Static.Border" Color="#0000"/>
 	<SolidColorBrush x:Key="ListBox.Disabled.Background" Color="#FFFFFFFF"/>
 	<SolidColorBrush x:Key="ListBox.Disabled.Border" Color="#FFD9D9D9"/>
+    
     <Style x:Key="PlaylistListBox" TargetType="{x:Type local:SongListBox}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
@@ -19,8 +20,8 @@
         <Setter Property="Template">
 			<Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:SongListBox}">
-					<ListBoxItem Content="ListBoxItem" HorizontalAlignment="Left" Height="280" VerticalAlignment="Top" Width="280"/>
-					<ControlTemplate.Triggers>
+                    <ListViewItem Content="Content" HorizontalAlignment="Left" Height="280" VerticalAlignment="Top" Width="280"/>
+                    <ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="false"/>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
@@ -49,6 +50,7 @@
 	<SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
 	<SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
 	<SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
+    
 	<Style x:Key="PlaylistSongItem" TargetType="{x:Type local:SongItem}">
 		<Style.Triggers>
 			<Trigger Property="IsActive" Value="False"/>
@@ -106,5 +108,72 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<!-- Resource dictionary entries should be defined here. -->
+
+    <Style x:Key="PlaylistSongItemTsu" TargetType="{x:Type local:SongItem}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="SnapsToDevicePixels" Value="True"/> <!-- For that Zune-like fuzz -->
+        <Setter Property="Padding" Value="2,0"/>
+        <Setter Property="Margin" Value="0,1" />
+        <Setter Property="TextElement.FontFamily" Value="Segoe UI"/>
+        <Setter Property="TextElement.FontWeight" Value="Semibold"/>
+        <Setter Property="TextElement.Foreground" Value="#FF373A3D"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:SongItem}">
+                    <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="MouseOver"/>
+                                <VisualState x:Name="Disabled"/>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected"/>
+                                <VisualState x:Name="Selected"/>
+                                <VisualState x:Name="SelectedUnfocused"/>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Border" Value="#206A6A6A"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                <Condition Property="IsSelected" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Border" Value="#446A6A6A"/>
+                            <Setter Property="TextElement.Foreground" Value="#F000"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                <Condition Property="IsSelected" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Border" Value="#446A6A6A"/>
+                            <Setter Property="TextElement.Foreground" Value="#F000"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsActive" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="TextElement.Foreground" TargetName="Border" Value="#FFF223A9"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="TextElement.Foreground" TargetName="Border" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+        <!-- Resource dictionary entries should be defined here. -->
 </ResourceDictionary>

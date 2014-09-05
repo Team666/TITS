@@ -9,19 +9,8 @@ using System.ComponentModel;
 
 namespace faceTITS.UserControls
 {
-    class SongListBox : System.Windows.Controls.ListBox
+    class SongListBox : System.Windows.Controls.ListView
     {
-
-        // Kinda sorta singleton DIRTY HACK NO SCOPE ~~
-        static SongListBox control;
-        public void SetStaticRefToSelf()
-        {
-            if (control == null)
-            {
-                control = this;
-            }
-        }
-
         public SongListBox()
         {
         }
@@ -40,7 +29,7 @@ namespace faceTITS.UserControls
         }
     }
 
-    class SongItem : System.Windows.Controls.ListBoxItem, INotifyPropertyChanged
+    class SongItem : System.Windows.Controls.ListViewItem, INotifyPropertyChanged
     {
         public SongItem() : base()
         {
@@ -49,6 +38,9 @@ namespace faceTITS.UserControls
 
         protected override void OnContentChanged(object oldContent, object newContent)
         {
+            if (newContent == BindingOperations.DisconnectedSource)
+                return;
+
             if (oldContent != null)
             {
                 (oldContent as TITS.Library.Song).NowPlayingStateChanged -= HandleContentNowPlayingStateChanged;
@@ -77,6 +69,22 @@ namespace faceTITS.UserControls
                 {
                     SetValue(IsActiveProperty, value);
                 });
+            }
+        }
+
+        public string SongNo
+        {
+            get
+            {
+                return (this.Content as TITS.Library.Song).Metadata.Track.ToString();
+            }
+        }
+
+        public string SongTitle
+        {
+            get
+            {
+                return (this.Content as TITS.Library.Song).Metadata.Title.ToString();
             }
         }
 

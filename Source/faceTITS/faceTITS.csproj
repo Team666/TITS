@@ -65,6 +65,7 @@
     </ApplicationDefinition>
     <Compile Include="Keyboard\KeyboardListener.cs" />
     <Compile Include="UserControls\SongListBox.cs" />
+    <Compile Include="ViewModels\Converters.cs" />
     <Compile Include="ViewModels\NowPlayingPlaylistModel.cs" />
     <Compile Include="ViewModels\PlaybackModel.cs" />
     <Compile Include="Views\NowPlayingPlaylist.xaml.cs">
